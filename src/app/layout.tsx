@@ -29,8 +29,8 @@ export default function RootLayout({
         <footer className="border-t border-stone-200 bg-stone-100 py-6">
           <div className="mx-auto max-w-5xl px-4 sm:px-6">
             <p className="text-xs text-stone-500">
-              Informational only. Always verify with the jurisdiction. We do not
-              provide legal or professional advice.
+              Decision-support tool. Informational only. Always verify with the
+              jurisdiction. We do not provide legal or professional advice.
             </p>
           </div>
         </footer>
