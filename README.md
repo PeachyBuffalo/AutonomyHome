@@ -1,37 +1,47 @@
 # AutonomyHome
 
-Michigan DIY Homebuilder Permit & Fee Directory — required permits and costs by township and county.
+**Pre-Purchase Governance Intelligence Platform** — neutral, data-driven decision-support for property development in Michigan.
 
-## Launch Counties
+## Positioning
 
-- **Ottawa County** — Health Dept (septic, well, soil eval), building permits at township level
-- **Allegan County** — Environmental Health (septic, well, soil erosion), building permits at township level
+- **Not** a rating system or advocacy platform
+- **Is** an investor/due diligence tool with measurable indicators
+- Two paths: **Residential** (permits, friction, cost, predictability) and **Commercial** (approval gates, rezoning risk, litigation, tax)
+- Dimensions: Regulatory Intensity, Buildability, Development Complexity, Tax Burden, Transparency, Predictability
+- Raw metrics + published methodology; users infer
+
+## Launch Scope
+
+- **1 county:** Ottawa County
+- **5 municipalities:** Georgetown, Holland, Olive, Park, Zeeland (Ottawa County townships)
+- Manual research; expansion deliberate
 
 ## Quick Start
 
 ```bash
 npm install
 npm run db:push    # Create SQLite DB
-npm run db:seed    # Seed Ottawa + Allegan data
+npm run db:seed    # Seed Ottawa + 5 municipalities
 npm run dev        # Start at http://localhost:3000
 ```
 
 ## Features
 
-- **Official link directory** — Building dept, health dept, fee schedule links per jurisdiction
-- **Fee catalog** — Parsed fees with source URLs and last-verified dates
-- **Permit checklist** — Zoning → Building → Trades → Septic/Well for new SFH
-- **Staleness badges** — Green (&lt;180 days), Yellow (180–365), Red (&gt;365)
-- **Cost calculator** — Estimate building permit fees by sq ft / valuation (illustrative)
-- **Legal disclaimers** — Informational only; always verify with jurisdiction
+- **Path selection** — Residential vs Commercial
+- **Governance profiles** — Dimension scores (0–100) + raw metrics
+- **Measurable indicators** — Permit cost formulas, processing days, variance/rezoning rates (when available)
+- **Official links** — Fee schedules, health dept, building dept
+- **Methodology page** — Published scoring approach
+- **Fee calculator** — Illustrative only
+- **Legal disclaimers** — Decision-support; verify with jurisdiction
 
 ## Data Model
 
 - `Jurisdiction` — township/city/county, contact, links
-- `PermitType` — building, electrical, plumbing, septic, well, soil_eval, etc.
-- `FeeItem` — fee name, amount or formula, units, source URL, last verified
-- `SourceDoc` — official PDF/webpage links for trust
+- `GovernanceMetric` — raw indicators (path, metricType, value, sourceUrl)
+- `GovernanceDimension` — dimension scores (path, dimension, score, methodologyNote)
+- `FeeItem`, `PermitType`, `SourceDoc` — permit/fee catalog
 
 ## Adding Jurisdictions
 
-Edit `prisma/seed.ts` and add to `JURISDICTIONS`, then run `npm run db:seed`. Or use the Prisma Studio: `npx prisma studio`.
+Edit `prisma/seed.ts` and add to `JURISDICTIONS`, then run `npm run db:seed`. Or use `npx prisma studio`.

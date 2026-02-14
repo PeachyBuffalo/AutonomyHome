@@ -1,5 +1,5 @@
-// AutonomyHome - Michigan DIY Homebuilder Permit & Fee Directory
-// Data model for jurisdictions, permit types, fees, and source documents
+// AutonomyHome - Pre-Purchase Governance Intelligence Platform
+// Neutral, data-driven decision-support for residential & commercial development
 
 generator client {
   provider = "prisma-client-js"
@@ -25,8 +25,42 @@ model Jurisdiction {
   createdAt         DateTime    @default(now())
   updatedAt         DateTime    @updatedAt
 
-  feeItems          FeeItem[]
-  sourceDocs        SourceDoc[]
+  feeItems             FeeItem[]
+  sourceDocs           SourceDoc[]
+  governanceMetrics    GovernanceMetric[]
+  governanceDimensions GovernanceDimension[]
+}
+
+// Measurable indicators — no opinion, no advocacy. Users infer.
+model GovernanceMetric {
+  id               String   @id @default(cuid())
+  jurisdictionId   String
+  path             String   // residential | commercial
+  metricType       String   // variance_approval_rate | rezoning_approval_rate | permit_processing_days | permit_cost_formula | infrastructure_per_capita | zoning_lawsuits_count | etc.
+  metricName       String   // human-readable label
+  valueNumeric     Float?   // for rates, counts, days
+  valueText        String?  // for formulas, descriptive
+  unit             String?  // percent | days | dollars | formula
+  year             Int?     // data year
+  sourceUrl        String?
+  lastVerifiedDate DateTime?
+  notes            String?
+  createdAt        DateTime @default(now())
+
+  jurisdiction     Jurisdiction @relation(fields: [jurisdictionId], references: [id], onDelete: Cascade)
+}
+
+// Dimension scores (0–100) — computed or manual, methodology published
+model GovernanceDimension {
+  id               String   @id @default(cuid())
+  jurisdictionId   String
+  path             String   // residential | commercial
+  dimension        String   // regulatory_intensity | buildability | development_complexity | tax_burden | transparency | predictability
+  score            Int      // 0–100
+  methodologyNote  String?  // how this was derived
+  lastUpdated      DateTime @default(now())
+
+  jurisdiction     Jurisdiction @relation(fields: [jurisdictionId], references: [id], onDelete: Cascade)
 }
 
 model PermitType {

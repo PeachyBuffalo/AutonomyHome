@@ -16,7 +16,7 @@ const PERMIT_TYPES = [
   { slug: "soil_eval", name: "Soil / Site Evaluation", category: "environmental", sortOrder: 11 },
 ];
 
-// Ottawa County & Allegan County - Phase 1 launch jurisdictions
+// Ottawa County + 5 municipalities (narrow launch scope)
 const JURISDICTIONS = [
   {
     name: "Ottawa County",
@@ -31,16 +31,64 @@ const JURISDICTIONS = [
     notes: "Building permits are issued by individual townships/cities. County handles environmental health (septic, well). See township for building permit fees.",
   },
   {
-    name: "Allegan County",
-    type: "county" as const,
-    county: null,
-    website: "https://www.allegancounty.org",
-    phone: "(269) 673-5415",
-    buildingDeptLink: null,
-    healthDeptLink: "https://www.allegancounty.org/health/environmental-health/field",
-    address: "3255 122nd Ave, Suite 200, Allegan, MI 49010",
-    officeHours: "Mon–Fri 8am–5pm",
-    notes: "Building permits are township/city level. County Environmental Health handles septic, well, and soil erosion permits.",
+    name: "Georgetown Township",
+    type: "township" as const,
+    county: "Ottawa",
+    website: "https://www.georgetown-mi.org",
+    phone: null,
+    buildingDeptLink: "https://www.georgetown-mi.org/building",
+    healthDeptLink: null,
+    address: null,
+    officeHours: null,
+    notes: "Ottawa County township. Building permits at township level.",
+  },
+  {
+    name: "Holland Charter Township",
+    type: "township" as const,
+    county: "Ottawa",
+    website: "https://www.hollandtownship.org",
+    phone: null,
+    buildingDeptLink: "https://www.hollandtownship.org/building",
+    healthDeptLink: null,
+    address: null,
+    officeHours: null,
+    notes: "Ottawa County township.",
+  },
+  {
+    name: "Olive Township",
+    type: "township" as const,
+    county: "Ottawa",
+    website: "https://www.olivetownship.org",
+    phone: null,
+    buildingDeptLink: "https://www.olivetownship.org/permits-fee-schedules",
+    healthDeptLink: null,
+    address: null,
+    officeHours: null,
+    notes: "Ottawa County township. Fee schedules published.",
+  },
+  {
+    name: "Park Township",
+    type: "township" as const,
+    county: "Ottawa",
+    website: "https://www.parktwp.org",
+    phone: null,
+    buildingDeptLink: "https://www.parktwp.org/building",
+    healthDeptLink: null,
+    address: null,
+    officeHours: null,
+    notes: "Ottawa County township.",
+  },
+  {
+    name: "Zeeland Charter Township",
+    type: "township" as const,
+    county: "Ottawa",
+    website: "https://www.zeelandtownship.org",
+    phone: null,
+    buildingDeptLink: "https://www.zeelandtownship.org/building",
+    healthDeptLink: null,
+    address: null,
+    officeHours: null,
+    notes: "Ottawa County township.",
   },
 ];
 
@@ -62,10 +110,10 @@ async function main() {
     }
   }
 
-  // Seed fee items for Ottawa County (from published fee schedules)
   const ottawa = await prisma.jurisdiction.findFirst({ where: { name: "Ottawa County" } });
-  const allegan = await prisma.jurisdiction.findFirst({ where: { name: "Allegan County" } });
+  const olive = await prisma.jurisdiction.findFirst({ where: { name: "Olive Township" } });
 
+  // Fee items for Ottawa County (environmental health)
   if (ottawa) {
     const permitTypes = await prisma.permitType.findMany();
     const getPt = (slug: string) => permitTypes.find((p) => p.slug === slug)!;
@@ -73,56 +121,77 @@ async function main() {
     if (existingFees === 0) {
       await prisma.feeItem.createMany({
         data: [
-          { jurisdictionId: ottawa.id, permitTypeId: getPt("septic").id, feeName: "Septic System NEW (Private Single Family)", amount: 535, units: "flat", sourceUrl: "https://www.miottawa.org/Health/fees.htm", notes: "Range $535–$980 depending on system type", lastVerifiedDate: new Date() },
-          { jurisdictionId: ottawa.id, permitTypeId: getPt("well").id, feeName: "Well System NEW (Private Single Family)", amount: 445, units: "flat", sourceUrl: "https://www.miottawa.org/Health/fees.htm", lastVerifiedDate: new Date() },
-          { jurisdictionId: ottawa.id, permitTypeId: getPt("soil_eval").id, feeName: "Septic & Well Systems Evaluation", amount: 345, units: "flat", sourceUrl: "https://www.miottawa.org/Health/fees.htm", notes: "Range $345–$370", lastVerifiedDate: new Date() },
+          { jurisdictionId: ottawa.id, permitTypeId: getPt("septic").id, feeName: "Septic System NEW (Private Single Family)", amount: 535, units: "flat", sourceUrl: "https://www.miottawa.org/Health", notes: "Range $535–$980", lastVerifiedDate: new Date() },
+          { jurisdictionId: ottawa.id, permitTypeId: getPt("well").id, feeName: "Well System NEW (Private Single Family)", amount: 445, units: "flat", sourceUrl: "https://www.miottawa.org/Health", lastVerifiedDate: new Date() },
+          { jurisdictionId: ottawa.id, permitTypeId: getPt("soil_eval").id, feeName: "Septic & Well Systems Evaluation", amount: 345, units: "flat", sourceUrl: "https://www.miottawa.org/Health", notes: "Range $345–$370", lastVerifiedDate: new Date() },
+        ],
+      });
+    }
+
+    // Sample governance metrics (measurable indicators)
+    const existingMetrics = await prisma.governanceMetric.count({ where: { jurisdictionId: ottawa.id } });
+    if (existingMetrics === 0) {
+      await prisma.governanceMetric.createMany({
+        data: [
+          { jurisdictionId: ottawa.id, path: "residential", metricType: "permit_cost_formula", metricName: "Building permit (township)", valueText: "Varies by township; many use $X per $1,000 valuation", unit: "formula", sourceUrl: "https://www.miottawa.org/Planning/fee-schedule.htm", lastVerifiedDate: new Date() },
+          { jurisdictionId: ottawa.id, path: "residential", metricType: "permit_processing_days", metricName: "Typical permit review (estimate)", valueNumeric: 14, unit: "days", year: 2024, notes: "Varies by township", lastVerifiedDate: new Date() },
+          { jurisdictionId: ottawa.id, path: "residential", metricType: "transparency", metricName: "Fee schedule published online", valueText: "Yes (county health)", unit: "other", sourceUrl: "https://www.miottawa.org/Health", lastVerifiedDate: new Date() },
+        ],
+      });
+    }
+
+    // Sample dimension scores (methodology-derived)
+    const existingDims = await prisma.governanceDimension.count({ where: { jurisdictionId: ottawa.id } });
+    if (existingDims === 0) {
+      await prisma.governanceDimension.createMany({
+        data: [
+          { jurisdictionId: ottawa.id, path: "residential", dimension: "transparency", score: 72, methodologyNote: "Fee schedules available; township variance" },
+          { jurisdictionId: ottawa.id, path: "residential", dimension: "predictability", score: 65, methodologyNote: "County health process documented" },
         ],
       });
     }
   }
 
-  if (allegan) {
+  // Olive Township sample metrics (from web search - they publish fees)
+  if (olive) {
     const permitTypes = await prisma.permitType.findMany();
     const getPt = (slug: string) => permitTypes.find((p) => p.slug === slug)!;
-    const existingFees = await prisma.feeItem.count({ where: { jurisdictionId: allegan.id } });
+    const existingFees = await prisma.feeItem.count({ where: { jurisdictionId: olive.id } });
     if (existingFees === 0) {
       await prisma.feeItem.createMany({
         data: [
-          { jurisdictionId: allegan.id, permitTypeId: getPt("septic").id, feeName: "Residential On-Site Sewage", amount: 362, units: "flat", sourceUrl: "https://www.allegancounty.org/health/environmental-health/field", lastVerifiedDate: new Date("2024-11-01") },
-          { jurisdictionId: allegan.id, permitTypeId: getPt("septic").id, feeName: "Combined Well/Septic", amount: 591, units: "flat", sourceUrl: "https://www.allegancounty.org/health/environmental-health/field", lastVerifiedDate: new Date("2024-11-01") },
-          { jurisdictionId: allegan.id, permitTypeId: getPt("well").id, feeName: "Well Permit (includes lab fee)", amount: 295, units: "flat", sourceUrl: "https://www.allegancounty.org/health/environmental-health/field", lastVerifiedDate: new Date("2024-11-01") },
-          { jurisdictionId: allegan.id, permitTypeId: getPt("soil_eval").id, feeName: "Site Survey/Vacant Land Evaluation", amount: 330, units: "flat", sourceUrl: "https://www.allegancounty.org/health/environmental-health/field", lastVerifiedDate: new Date("2024-11-01") },
+          { jurisdictionId: olive.id, permitTypeId: getPt("electrical").id, feeName: "New House", amount: 285, units: "flat", sourceUrl: "https://www.olivetownship.org/permits-fee-schedules", lastVerifiedDate: new Date() },
+          { jurisdictionId: olive.id, permitTypeId: getPt("mechanical").id, feeName: "New House", amount: 190, units: "flat", sourceUrl: "https://www.olivetownship.org/permits-fee-schedules", lastVerifiedDate: new Date() },
+          { jurisdictionId: olive.id, permitTypeId: getPt("plumbing").id, feeName: "New House", amount: 190, units: "flat", sourceUrl: "https://www.olivetownship.org/permits-fee-schedules", lastVerifiedDate: new Date() },
+        ],
+      });
+    }
+
+    const existingMetrics = await prisma.governanceMetric.count({ where: { jurisdictionId: olive.id } });
+    if (existingMetrics === 0) {
+      await prisma.governanceMetric.createMany({
+        data: [
+          { jurisdictionId: olive.id, path: "residential", metricType: "permit_cost_formula", metricName: "Electrical – New House", valueNumeric: 285, unit: "dollars", sourceUrl: "https://www.olivetownship.org/permits-fee-schedules", lastVerifiedDate: new Date() },
+          { jurisdictionId: olive.id, path: "residential", metricType: "transparency", metricName: "Fee schedule published", valueText: "Yes", unit: "other", lastVerifiedDate: new Date() },
         ],
       });
     }
   }
 
-  // Source docs for trust/transparency
+  // Source docs
   if (ottawa) {
     const existingDocs = await prisma.sourceDoc.count({ where: { jurisdictionId: ottawa.id } });
     if (existingDocs === 0) {
       await prisma.sourceDoc.createMany({
         data: [
-          { jurisdictionId: ottawa.id, url: "https://www.miottawa.org/Health/fees.htm", documentTitle: "Ottawa County Health Dept – Fees, Lots, Plats", filetype: "html" },
+          { jurisdictionId: ottawa.id, url: "https://www.miottawa.org/Health", documentTitle: "Ottawa County Health Dept", filetype: "html" },
           { jurisdictionId: ottawa.id, url: "https://www.miottawa.org/Planning/fee-schedule.htm", documentTitle: "Ottawa County Fee Schedule", filetype: "html" },
         ],
       });
     }
   }
 
-  if (allegan) {
-    const existingDocs = await prisma.sourceDoc.count({ where: { jurisdictionId: allegan.id } });
-    if (existingDocs === 0) {
-      await prisma.sourceDoc.createMany({
-        data: [
-          { jurisdictionId: allegan.id, url: "https://www.allegancounty.org/health/environmental-health/field", documentTitle: "Allegan County Environmental Health – Field Services", filetype: "html" },
-          { jurisdictionId: allegan.id, url: "https://bldhd.org/media/uploads/Environmental%20Health%20Form/2025_fy_eh_fee_schedule_-_adopted.pdf", documentTitle: "Allegan County EH Fee Schedule FY2025 (PDF)", filetype: "pdf" },
-        ],
-      });
-    }
-  }
-
-  console.log("Seed complete: Ottawa County + Allegan County");
+  console.log("Seed complete: Ottawa County + 5 municipalities");
 }
 
 main()
