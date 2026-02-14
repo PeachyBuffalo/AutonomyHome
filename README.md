@@ -1,47 +1,46 @@
-# AutonomyHome
+# Municipal Governance & Buildability
 
-**Pre-Purchase Governance Intelligence Platform** — neutral, data-driven decision-support for property development in Michigan.
+Zillow-style Snapshot + Moody's-style Details for property development due diligence in Michigan.
 
-## Positioning
+## Overview
 
-- **Not** a rating system or advocacy platform
-- **Is** an investor/due diligence tool with measurable indicators
-- Two paths: **Residential** (permits, friction, cost, predictability) and **Commercial** (approval gates, rezoning risk, litigation, tax)
-- Dimensions: Regulatory Intensity, Buildability, Development Complexity, Tax Burden, Transparency, Predictability
-- Raw metrics + published methodology; users infer
-
-## Launch Scope
-
-- **1 county:** Ottawa County
-- **5 municipalities:** Georgetown, Holland, Olive, Park, Zeeland (Ottawa County townships)
-- Manual research; expansion deliberate
+- **Snapshot (Zillow-style):** Visual, simple, color-coded scores. Regulatory Intensity, Development Predictability, Fiscal Burden, Administrative Transparency.
+- **Details (Moody's-style):** Structured analytics with footnotes, citations, methodology.
+- **Two paths:** Residential (buildability, permits, friction) and Commercial (zoning, approval complexity, litigation, tax).
 
 ## Quick Start
 
 ```bash
 npm install
 npm run db:push    # Create SQLite DB
-npm run db:seed    # Seed Ottawa + 5 municipalities
-npm run dev        # Start at http://localhost:3000
+npm run db:seed    # Seed Holland, Olive, Georgetown
+npm run dev        # http://localhost:3000
 ```
 
-## Features
+## Routes
 
-- **Path selection** — Residential vs Commercial
-- **Governance profiles** — Dimension scores (0–100) + raw metrics
-- **Measurable indicators** — Permit cost formulas, processing days, variance/rezoning rates (when available)
-- **Official links** — Fee schedules, health dept, building dept
-- **Methodology page** — Published scoring approach
-- **Fee calculator** — Illustrative only
-- **Legal disclaimers** — Decision-support; verify with jurisdiction
+- `/` — Search + featured municipalities
+- `/m/:slug` — Municipality profile (Snapshot + Details + Sources + Methodology)
+- `/methodology` — Full scoring methodology
+- `/calculator` — Fee calculator (illustrative)
 
-## Data Model
+## Seed Data
 
-- `Jurisdiction` — township/city/county, contact, links
-- `GovernanceMetric` — raw indicators (path, metricType, value, sourceUrl)
-- `GovernanceDimension` — dimension scores (path, dimension, score, methodologyNote)
-- `FeeItem`, `PermitType`, `SourceDoc` — permit/fee catalog
+- **Holland Charter Township** — Full example with citations
+- **Olive Township** — Plausible placeholders
+- **Georgetown Township** — Plausible placeholders
 
-## Adding Jurisdictions
+## Schema
 
-Edit `prisma/seed.ts` and add to `JURISDICTIONS`, then run `npm run db:seed`. Or use `npx prisma studio`.
+- `Jurisdiction` — name, slug, type, county, state
+- `MetricDef` — key, label, unit, path (residential/commercial)
+- `MetricValue` — jurisdiction, metric, value, last_verified
+- `Source` — url, title, publisher
+- `Citation` — links metric values to sources with labels [1], [2], etc.
+
+## Scoring
+
+- **Regulatory Intensity (0–100):** permit cost, permits count, inspections, approval gates, processing days
+- **Development Predictability (0–100):** variance rate, rezoning rate, amendments, litigation
+- **Fiscal Burden (0–100):** millage, special assessments, debt per capita
+- **Administrative Transparency (A+–F):** fee schedule, zoning map, minutes, portal, checklists

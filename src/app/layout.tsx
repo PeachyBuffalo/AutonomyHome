@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "AutonomyHome | Pre-Purchase Governance Intelligence",
+  title: "Municipal Governance & Buildability | Michigan",
   description:
-    "Data-driven due diligence for property development in Michigan. Permits, fees, approval metrics. Residential and commercial paths. No advocacy—decision support only.",
+    "Understand governance, permitting, tax, and predictability before buying property. Residential and commercial development due diligence.",
 };
 
 export default function RootLayout({
@@ -21,7 +21,7 @@ export default function RootLayout({
               AutonomyHome
             </a>
             <p className="mt-0.5 text-sm text-stone-500">
-              Pre-Purchase Governance Intelligence · Michigan
+              Municipal Governance & Buildability · Michigan
             </p>
           </div>
         </header>

@@ -7,8 +7,10 @@ export default async function CommercialPathPage() {
   const jurisdictions = await prisma.jurisdiction.findMany({
     orderBy: { name: "asc" },
     include: {
-      governanceMetrics: { where: { path: "commercial" } },
-      governanceDimensions: { where: { path: "commercial" } },
+      metricValues: {
+        where: { metricDef: { pathCommercial: true } },
+        include: { metricDef: true },
+      },
     },
   });
 
@@ -36,13 +38,13 @@ export default async function CommercialPathPage() {
           {jurisdictions.map((j) => (
             <Link
               key={j.id}
-              href={`/jurisdiction/${j.id}?path=commercial`}
+              href={j.slug ? `/m/${j.slug}?path=commercial` : `/jurisdiction/${j.id}?path=commercial`}
               className="rounded-lg border border-stone-200 bg-white p-5 shadow-sm transition hover:border-stone-300"
             >
               <h3 className="font-semibold text-stone-900">{j.name}</h3>
               <p className="mt-1 text-sm capitalize text-stone-500">{j.type}</p>
               <div className="mt-4 flex items-center gap-2 text-sm text-stone-600">
-                <span>{j.governanceMetrics.length} metrics</span>
+                <span>{j.metricValues.length} metrics</span>
               </div>
             </Link>
           ))}

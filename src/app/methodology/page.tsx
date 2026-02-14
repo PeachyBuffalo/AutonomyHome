@@ -1,48 +1,6 @@
 import Link from "next/link";
 
 export default function MethodologyPage() {
-  const dimensions = [
-    {
-      slug: "regulatory_intensity",
-      name: "Regulatory Intensity",
-      desc: "Volume and complexity of permits, inspections, and approvals required.",
-    },
-    {
-      slug: "buildability",
-      name: "Buildability (Residential)",
-      desc: "Ease of obtaining residential permits; friction and cost.",
-    },
-    {
-      slug: "development_complexity",
-      name: "Development Complexity (Commercial)",
-      desc: "Number of approval gates, rezoning risk, site plan review complexity.",
-    },
-    {
-      slug: "tax_burden",
-      name: "Tax Burden",
-      desc: "Property and development-related taxes.",
-    },
-    {
-      slug: "transparency",
-      name: "Transparency",
-      desc: "Availability of fee schedules, timelines, and requirements online.",
-    },
-    {
-      slug: "predictability",
-      name: "Predictability / Discretion Level",
-      desc: "Consistency of outcomes; variance and rezoning approval rates.",
-    },
-  ];
-
-  const metrics = [
-    { name: "Variance approval rate", unit: "%", path: "Both" },
-    { name: "Rezoning approval rate", unit: "%", path: "Commercial" },
-    { name: "Permit processing timeline", unit: "days", path: "Residential" },
-    { name: "Permit cost formula", unit: "formula", path: "Residential" },
-    { name: "Infrastructure spending per capita", unit: "$", path: "Both" },
-    { name: "Zoning-related lawsuits (count)", unit: "count", path: "Commercial" },
-  ];
-
   return (
     <div className="space-y-10">
       <Link href="/" className="text-sm text-stone-500 hover:text-stone-700">
@@ -54,83 +12,81 @@ export default function MethodologyPage() {
           Scoring Methodology
         </h1>
         <p className="mt-2 text-stone-600">
-          We publish our methodology so you can assess the data yourself. No
-          single ideological score—only measurable indicators and dimension
-          profiles.
+          Transparent weights and formulas. All indices are computed from raw
+          metrics with published methodology.
         </p>
       </header>
 
-      <section>
-        <h2 className="text-lg font-semibold text-stone-800">
-          Dimensions (0–100)
-        </h2>
-        <p className="mt-1 text-sm text-stone-600">
-          Category scores are derived from raw metrics. Different buyers prefer
-          different profiles. We do not judge—we reveal.
-        </p>
-        <ul className="mt-4 space-y-4">
-          {dimensions.map((d) => (
-            <li
-              key={d.slug}
-              className="rounded-lg border border-stone-200 bg-white p-4"
-            >
-              <h3 className="font-medium text-stone-900">{d.name}</h3>
-              <p className="mt-1 text-sm text-stone-600">{d.desc}</p>
-            </li>
-          ))}
-        </ul>
-      </section>
+      <section className="space-y-6">
+        <div className="rounded-lg border border-stone-200 bg-white p-6">
+          <h2 className="text-lg font-semibold text-stone-800">
+            Regulatory Intensity Index (0–100)
+          </h2>
+          <p className="mt-2 text-stone-600">
+            Higher = more regulatory friction. Weighted components:
+          </p>
+          <ul className="mt-4 list-disc space-y-2 pl-6 text-stone-600">
+            <li>Permit cost burden: 20%</li>
+            <li>Required permits count: 15%</li>
+            <li>Required inspections: 15%</li>
+            <li>Approval gates: 20%</li>
+            <li>Average processing days: 15%</li>
+            <li>Point-of-sale inspection: 15%</li>
+          </ul>
+        </div>
 
-      <section>
-        <h2 className="text-lg font-semibold text-stone-800">
-          Raw Metrics (Measurable Indicators)
-        </h2>
-        <p className="mt-1 text-sm text-stone-600">
-          We collect data, not opinions. Users infer. This reduces legal exposure
-          and increases credibility.
-        </p>
-        <div className="mt-4 overflow-x-auto">
-          <table className="min-w-full divide-y divide-stone-200">
-            <thead>
-              <tr>
-                <th className="px-4 py-2 text-left text-sm font-medium text-stone-700">
-                  Metric
-                </th>
-                <th className="px-4 py-2 text-left text-sm font-medium text-stone-700">
-                  Unit
-                </th>
-                <th className="px-4 py-2 text-left text-sm font-medium text-stone-700">
-                  Path
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-stone-100">
-              {metrics.map((m) => (
-                <tr key={m.name}>
-                  <td className="px-4 py-2 text-sm text-stone-800">{m.name}</td>
-                  <td className="px-4 py-2 text-sm text-stone-600">{m.unit}</td>
-                  <td className="px-4 py-2 text-sm text-stone-600">{m.path}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="rounded-lg border border-stone-200 bg-white p-6">
+          <h2 className="text-lg font-semibold text-stone-800">
+            Development Predictability Index (0–100)
+          </h2>
+          <p className="mt-2 text-stone-600">
+            Higher = more predictable outcomes. Weighted components:
+          </p>
+          <ul className="mt-4 list-disc space-y-2 pl-6 text-stone-600">
+            <li>Variance approval rate (5-yr): 25%</li>
+            <li>Rezoning approval rate: 25%</li>
+            <li>Ordinance amendment frequency: 20%</li>
+            <li>Litigation count: 20%</li>
+            <li>Timeline variance: 10%</li>
+          </ul>
+        </div>
+
+        <div className="rounded-lg border border-stone-200 bg-white p-6">
+          <h2 className="text-lg font-semibold text-stone-800">
+            Fiscal Burden Score (0–100)
+          </h2>
+          <p className="mt-2 text-stone-600">
+            Higher = more costly tax environment. Weighted components:
+          </p>
+          <ul className="mt-4 list-disc space-y-2 pl-6 text-stone-600">
+            <li>Millage rate vs county median: 50%</li>
+            <li>Special assessments: 25%</li>
+            <li>Debt per capita: 25%</li>
+          </ul>
+        </div>
+
+        <div className="rounded-lg border border-stone-200 bg-white p-6">
+          <h2 className="text-lg font-semibold text-stone-800">
+            Administrative Transparency (A+ to F)
+          </h2>
+          <p className="mt-2 text-stone-600">
+            Letter grade rubric. Each criterion present adds one tier:
+          </p>
+          <ul className="mt-4 list-disc space-y-2 pl-6 text-stone-600">
+            <li>Fee schedule published online</li>
+            <li>Zoning map available online</li>
+            <li>Meeting minutes searchable</li>
+            <li>Permit application portal</li>
+            <li>Clear permit checklists</li>
+          </ul>
+          <p className="mt-4 text-stone-600">
+            5/5 = A-, 4/5 = B+, 3/5 = C, 2/5 = C-, 1/5 = D, 0/5 = F
+          </p>
         </div>
       </section>
 
-      <section className="rounded-lg border border-stone-200 bg-stone-50 p-6">
-        <h2 className="text-lg font-semibold text-stone-800">
-          What we avoid
-        </h2>
-        <ul className="mt-4 list-disc space-y-2 pl-5 text-sm text-stone-700">
-          <li>Political framing (e.g., &quot;Freedom&quot; vs &quot;Red Tape&quot;)</li>
-          <li>Emotional or advocacy labels</li>
-          <li>Opinion-based claims</li>
-          <li>Single composite scores without raw data beneath</li>
-        </ul>
-      </section>
-
       <Link href="/" className="block text-sm font-medium text-stone-600 hover:text-stone-900">
-        ← Back to directory
+        ← Back to search
       </Link>
     </div>
   );
