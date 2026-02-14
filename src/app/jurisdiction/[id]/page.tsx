@@ -2,6 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import {
+  computeRegulatoryIntensity,
+  computePredictability,
+  computeFiscalBurden,
+  computeTransparencyGrade,
+  getStalenessBadge,
+} from "@/lib/scoring";
+import type { MetricValueRow } from "@/lib/scoring";
 
 export const dynamic = "force-dynamic";
 
@@ -35,20 +43,10 @@ const PERMIT_CHECKLIST = [
 
 const DIMENSION_LABELS: Record<string, string> = {
   regulatory_intensity: "Regulatory Intensity",
-  buildability: "Buildability",
-  development_complexity: "Development Complexity",
-  tax_burden: "Tax Burden",
-  transparency: "Transparency",
-  predictability: "Predictability",
+  predictability: "Development Predictability",
+  fiscal_burden: "Fiscal Burden",
+  transparency: "Administrative Transparency",
 };
-
-function getStalenessBadge(lastVerified: Date | null) {
-  if (!lastVerified) return { label: "Unknown", color: "bg-stone-700" };
-  const days = Math.floor((Date.now() - lastVerified.getTime()) / 86400000);
-  if (days < 180) return { label: "Recent", color: "bg-green-600" };
-  if (days < 365) return { label: "Check", color: "bg-amber-600" };
-  return { label: "Stale", color: "bg-red-600" };
-}
 
 export default async function JurisdictionPage({
   params,

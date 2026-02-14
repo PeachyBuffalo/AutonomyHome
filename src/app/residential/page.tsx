@@ -8,8 +8,10 @@ export default async function ResidentialPathPage() {
     orderBy: { name: "asc" },
     include: {
       feeItems: { include: { permitType: true } },
-      governanceMetrics: { where: { path: "residential" } },
-      governanceDimensions: { where: { path: "residential" } },
+      metricValues: {
+        where: { metricDef: { pathResidential: true } },
+        include: { metricDef: true },
+      },
     },
   });
 
@@ -37,7 +39,7 @@ export default async function ResidentialPathPage() {
           {jurisdictions.map((j) => (
             <Link
               key={j.id}
-              href={`/jurisdiction/${j.id}?path=residential`}
+              href={j.slug ? `/m/${j.slug}?path=residential` : `/jurisdiction/${j.id}?path=residential`}
               className="rounded-lg border border-stone-200 bg-white p-5 shadow-sm transition hover:border-stone-300"
             >
               <h3 className="font-semibold text-stone-900">{j.name}</h3>
@@ -45,7 +47,7 @@ export default async function ResidentialPathPage() {
               <div className="mt-4 flex items-center gap-2 text-sm text-stone-600">
                 <span>{j.feeItems.length} fees</span>
                 <span>·</span>
-                <span>{j.governanceMetrics.length} metrics</span>
+                <span>{j.metricValues.length} metrics</span>
               </div>
             </Link>
           ))}
