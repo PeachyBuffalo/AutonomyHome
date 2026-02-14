@@ -1,0 +1,36 @@
+Municipal Governance & Buildability - App Summary
+
+What it is
+- A Next.js web app for Michigan property-development due diligence across municipalities.
+- It combines a quick "Snapshot" score view with "Details" tables, sources, and methodology for residential and commercial paths.
+
+Who it's for
+- Primary persona: property buyers, developers, and operators comparing Michigan jurisdictions before buying or building.
+
+What it does
+- Searches and lists municipalities, then links to per-jurisdiction profiles.
+- Shows Snapshot cards for regulatory intensity, predictability, fiscal burden, transparency, and data confidence.
+- Provides path toggle (residential vs commercial) to filter relevant metrics.
+- Shows detailed metric tables with units, verification dates, and confidence context.
+- Displays source citations per metric and a methodology panel for scoring transparency.
+- Includes an illustrative permit-fee calculator with clear disclaimer language.
+- Supports structured data import and metric coverage reporting via scripts.
+
+How it works (repo-evidenced architecture)
+- UI layer: Next.js App Router pages in src/app plus reusable React components in src/components.
+- Data layer: Prisma Client (src/lib/prisma.ts) over SQLite (DATABASE_URL=file:./dev.db).
+- Domain model: Prisma schema defines Jurisdiction, MetricDef, MetricValue, Source, Citation, PermitType, FeeItem, SourceDoc.
+- Scoring service: src/lib/scoring.ts computes indices/grades from metric rows and returns drivers/confidence/staleness.
+- Data flow: seed/import scripts populate SQLite -> pages query Prisma server-side -> scores are computed in-app -> rendered as snapshot/details/sources/methodology.
+- External integrations: third-party API services for runtime data fetch Not found in repo.
+- Auth/multi-user accounts: Not found in repo.
+
+How to run (minimal)
+- npm install
+- npm run db:push
+- npm run db:seed
+- npm run dev
+- Open http://localhost:3000
+
+Notes
+- Deployment environment/hosting target: Not found in repo.
