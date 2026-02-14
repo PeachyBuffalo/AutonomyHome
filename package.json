@@ -10,7 +10,8 @@
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:seed": "tsx prisma/seed.ts",
-    "data:import": "tsx scripts/import-collected-data.ts"
+    "data:import": "tsx scripts/import-collected-data.ts",
+    "data:coverage": "tsx scripts/metrics-coverage-report.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",

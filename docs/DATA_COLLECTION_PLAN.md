@@ -180,14 +180,15 @@ After Holland, Olive, Georgetown are fully real:
 
 ---
 
-## 7. Tooling Ideas
+## 7. Tooling
 
 | Tool | Purpose |
 |------|---------|
-| Research checklist | Markdown/Notion template per jurisdiction |
-| CSV import script | Bulk import from researcher spreadsheets |
+| `npm run data:coverage` | Report metric gaps per jurisdiction (residential + commercial) |
+| `npm run data:import` | Import from `data/collected-data.json` |
+| Research checklist | Markdown template in `docs/research/` per jurisdiction |
 | FOIA template | Standard request for permit logs, processing times |
-| Admin UI | CRUD for MetricValue, Source, Citation with audit log |
+| Admin UI (future) | CRUD for MetricValue, Source, Citation with audit log |
 
 ---
 
