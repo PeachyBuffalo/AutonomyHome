@@ -26,9 +26,12 @@ npm run dev        # http://localhost:3000
 
 ## Seed Data
 
-- **Holland Charter Township** — Full example with citations
-- **Olive Township** — Plausible placeholders
-- **Georgetown Township** — Plausible placeholders
+- **Holland Charter Township** — Verified: millage (31.98), transparency (fee schedule, no portal), permit counts. Real URLs (hct.holland.mi.us).
+- **Olive Township** — Verified: fee schedule (electrical, mechanical, plumbing), transparency. Real fee amounts.
+- **Georgetown Township** — Verified: URLs (gtwp.com), zoning fees. Uses PCI for building.
+- **Ottawa County** — Verified: septic ($535), well ($445), soil eval ($400) from county health.
+
+See [docs/DATA_COLLECTION_PLAN.md](docs/DATA_COLLECTION_PLAN.md) for the full data collection plan. Research templates in `docs/research/`.
 
 ## Schema
 

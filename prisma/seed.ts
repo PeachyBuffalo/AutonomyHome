@@ -43,14 +43,14 @@ const JURISDICTIONS = [
     type: "township" as const,
     county: "Ottawa",
     state: "MI",
-    website: "https://www.hollandtownship.org",
-    buildingDeptLink: "https://www.hollandtownship.org/building",
-    healthDeptLink: null,
-    phone: null,
-    address: null,
-    officeHours: null,
-    notes: "Ottawa County township.",
-    lastVerified: new Date("2024-11-15"),
+    website: "https://www.hct.holland.mi.us",
+    buildingDeptLink: "https://www.hct.holland.mi.us/permits",
+    healthDeptLink: "https://miottawa.org/health/environmental/well-septic",
+    phone: "(616) 396-2345",
+    address: "353 N. 120th Avenue, Holland, MI 49424",
+    officeHours: "Mon–Fri 8am–5pm",
+    notes: "Ottawa County township. Septic/well permits via Ottawa County Health.",
+    lastVerified: new Date("2025-02-14"),
   },
   {
     name: "Olive Township",
@@ -60,12 +60,12 @@ const JURISDICTIONS = [
     state: "MI",
     website: "https://www.olivetownship.org",
     buildingDeptLink: "https://www.olivetownship.org/permits-fee-schedules",
-    healthDeptLink: null,
+    healthDeptLink: "https://miottawa.org/health/environmental/well-septic",
     phone: null,
     address: null,
     officeHours: null,
-    notes: "Ottawa County township. Fee schedules published.",
-    lastVerified: new Date("2024-10-01"),
+    notes: "Ottawa County township. Fee schedule effective 01/01/2025.",
+    lastVerified: new Date("2025-02-14"),
   },
   {
     name: "Georgetown Township",
@@ -73,14 +73,29 @@ const JURISDICTIONS = [
     type: "township" as const,
     county: "Ottawa",
     state: "MI",
-    website: "https://www.georgetown-mi.org",
-    buildingDeptLink: "https://www.georgetown-mi.org/building",
-    healthDeptLink: null,
-    phone: null,
+    website: "https://www.gtwp.com",
+    buildingDeptLink: "https://www.gtwp.com/193/Forms",
+    healthDeptLink: "https://miottawa.org/health/environmental/well-septic",
+    phone: "(616) 457-2340",
+    address: "1515 Baldwin St., Jenison, MI 49428",
+    officeHours: null,
+    notes: "Uses Professional Code Inspections (PCI) for building. Zoning fees: $50 (additions/decks/sheds), $100 (1000+ sq ft).",
+    lastVerified: new Date("2025-02-14"),
+  },
+  {
+    name: "Ottawa County",
+    slug: "ottawa-county",
+    type: "county" as const,
+    county: null,
+    state: "MI",
+    website: "https://miottawa.org",
+    buildingDeptLink: null,
+    healthDeptLink: "https://miottawa.org/health/environmental/well-septic",
+    phone: "(616) 393-5645",
     address: null,
     officeHours: null,
-    notes: "Ottawa County township.",
-    lastVerified: new Date("2024-09-20"),
+    notes: "Environmental health: septic, well, soil evaluation. Building permits at township level.",
+    lastVerified: new Date("2025-02-14"),
   },
 ];
 
@@ -112,88 +127,71 @@ async function main() {
   const metricDefs = await prisma.metricDef.findMany();
   const getDef = (key: string) => metricDefs.find((d) => d.key === key)!;
 
-  // Holland Charter Township - example values from spec
+  const createSource = async (url: string, title: string, publisher: string | null) => {
+    const existing = await prisma.source.findUnique({ where: { url } });
+    if (existing) return existing;
+    return prisma.source.create({
+      data: { url, title, publisher, retrievedDate: new Date() },
+    });
+  };
+
+  // Holland Charter Township — verified data (2025-02-14)
   const holland = await prisma.jurisdiction.findUnique({
     where: { slug: "holland-charter-township" },
   });
   if (holland) {
-    const sources: { url: string; title: string; publisher: string | null }[] = [
-      { url: "https://www.hollandtownship.org/board/minutes", title: "Township Board Minutes 2019-2024", publisher: "Holland Charter Township" },
-      { url: "https://www.hollandtownship.org/zoning", title: "Zoning Ordinance", publisher: "Holland Charter Township" },
-      { url: "https://www.hollandtownship.org/building", title: "Building Department Fee Schedule", publisher: "Holland Charter Township" },
-      { url: "https://www.miottawa.org/Equalization/taxrates.htm", title: "Ottawa County Tax Rates", publisher: "Ottawa County" },
-      { url: "https://www.hollandtownship.org/planning", title: "Planning Commission Records", publisher: "Holland Charter Township" },
-      { url: "https://www.courts.michigan.gov", title: "Michigan Court Records", publisher: "State of Michigan" },
+    const sMillage = await createSource("https://www.hct.holland.mi.us/departments/treasurer/tax-millage-rates", "2025 Tax Millage Rates", "Holland Charter Township");
+    const sPermits = await createSource("https://www.hct.holland.mi.us/permits", "Building Permits", "Holland Charter Township");
+    const sInfoPackets = await createSource("https://www.hct.holland.mi.us/forms/building-department-forms-information-packets/information-packets", "Building Dept Information Packets", "Holland Charter Township");
+    const sPlanning = await createSource("https://www.hct.holland.mi.us", "Holland Charter Township", "Holland Charter Township");
+    const sCourts = await createSource("https://www.courts.michigan.gov", "Michigan Court Records", "State of Michigan");
+
+    const hollandMetrics = [
+      { key: "variance_approval_rate_5yr", valueNumeric: null, lastVerified: new Date("2025-02-14"), notes: "Manual research: planning minutes 2019-2024", citationSource: sPlanning },
+      { key: "rezoning_approval_rate", valueNumeric: null, lastVerified: new Date("2025-02-14"), notes: "Manual research: planning minutes", citationSource: sPlanning },
+      { key: "avg_permit_processing_days", valueNumeric: null, lastVerified: new Date("2025-02-14"), notes: "Contact building dept or FOIA", citationSource: sPermits },
+      { key: "millage_rate", valueNumeric: 31.98, lastVerified: new Date("2025-02-14"), notes: "2025 Total PRE, Holland school district. Township 4.86 mills.", citationSource: sMillage },
+      { key: "zoning_amendments_10yr", valueNumeric: null, lastVerified: new Date("2025-02-14"), notes: "Manual research: ordinance history", citationSource: sPlanning },
+      { key: "zoning_litigation_10yr", valueNumeric: null, lastVerified: new Date("2025-02-14"), notes: "Manual research: courts.michigan.gov", citationSource: sCourts },
+      { key: "required_permits_count", valueNumeric: 6, lastVerified: new Date("2025-02-14"), notes: "Building, electrical, mechanical, plumbing, septic, well (typical SFH)", citationSource: sPermits },
+      { key: "required_inspections_count", valueNumeric: null, lastVerified: new Date("2025-02-14"), notes: "From fee schedule when available", citationSource: sInfoPackets },
+      { key: "approval_gates_count", valueNumeric: 3, lastVerified: new Date("2025-02-14"), notes: "Zoning, building, Ottawa County health (septic/well)", citationSource: sPermits },
+      { key: "permit_cost_burden", valueNumeric: null, lastVerified: new Date("2025-02-14"), notes: "Compute from fee totals when available", citationSource: sPermits },
+      { key: "fee_schedule_online", valueNumeric: 1, lastVerified: new Date("2025-02-14"), notes: "Info packets contain fee info", citationSource: sInfoPackets },
+      { key: "zoning_map_online", valueNumeric: null, lastVerified: new Date("2025-02-14"), notes: "TBD: check zoning/planning pages", citationSource: sPlanning },
+      { key: "minutes_searchable", valueNumeric: null, lastVerified: new Date("2025-02-14"), notes: "TBD: check meeting recordings", citationSource: sPlanning },
+      { key: "permit_portal", valueNumeric: 0, lastVerified: new Date("2025-02-14"), notes: "Forms dropped off or mailed", citationSource: sPermits },
+      { key: "clear_checklists", valueNumeric: null, lastVerified: new Date("2025-02-14"), notes: "Info packets may contain", citationSource: sInfoPackets },
+      { key: "special_assessments_present", valueNumeric: null, lastVerified: new Date("2025-02-14"), notes: "TBD: budget/CAFR", citationSource: sMillage },
+      { key: "debt_per_capita", valueNumeric: null, lastVerified: new Date("2025-02-14"), notes: "TBD: CAFR", citationSource: sMillage },
     ];
 
-    const createSource = async (url: string, title: string, publisher: string | null) => {
-      const existing = await prisma.source.findUnique({ where: { url } });
-      if (existing) return existing;
-      return prisma.source.create({
-        data: { url, title, publisher, retrievedDate: new Date() },
-      });
-    };
-
-    const s1 = await createSource("https://www.hollandtownship.org/board/minutes", "Township Board Minutes 2019-2024", "Holland Charter Township");
-    const s2 = await createSource("https://www.hollandtownship.org/zoning", "Zoning Ordinance", "Holland Charter Township");
-    const s3 = await createSource("https://www.hollandtownship.org/building", "Building Department Fee Schedule", "Holland Charter Township");
-    const s4 = await createSource("https://www.miottawa.org/Equalization/taxrates.htm", "Ottawa County Tax Rates", "Ottawa County");
-    const s5 = await createSource("https://www.hollandtownship.org/planning", "Planning Commission Records", "Holland Charter Township");
-    const s6 = await createSource("https://www.courts.michigan.gov", "Michigan Court Records", "State of Michigan");
-
-    const metricValues = [
-      { key: "variance_approval_rate_5yr", valueNumeric: 82, unit: "percent", lastVerified: new Date("2024-11-15"), notes: "5-year average" },
-      { key: "rezoning_approval_rate", valueNumeric: 74, unit: "percent", lastVerified: new Date("2024-11-15") },
-      { key: "avg_permit_processing_days", valueNumeric: 37, unit: "days", lastVerified: new Date("2024-11-15") },
-      { key: "millage_rate", valueNumeric: 42.5, unit: "mills", lastVerified: new Date("2024-11-15"), notes: "Combined township + county + school" },
-      { key: "zoning_amendments_10yr", valueNumeric: 19, unit: "count", lastVerified: new Date("2024-11-15") },
-      { key: "zoning_litigation_10yr", valueNumeric: 3, unit: "count", lastVerified: new Date("2024-11-15") },
-      { key: "required_permits_count", valueNumeric: 6, unit: "count", lastVerified: new Date("2024-11-15") },
-      { key: "required_inspections_count", valueNumeric: 5, unit: "count", lastVerified: new Date("2024-11-15") },
-      { key: "approval_gates_count", valueNumeric: 3, unit: "count", lastVerified: new Date("2024-11-15") },
-      { key: "permit_cost_burden", valueNumeric: 55, unit: "score", lastVerified: new Date("2024-11-15") },
-      { key: "fee_schedule_online", valueNumeric: 1, unit: "boolean", lastVerified: new Date("2024-11-15") },
-      { key: "zoning_map_online", valueNumeric: 1, unit: "boolean", lastVerified: new Date("2024-11-15") },
-      { key: "minutes_searchable", valueNumeric: 1, unit: "boolean", lastVerified: new Date("2024-11-15") },
-      { key: "permit_portal", valueNumeric: 1, unit: "boolean", lastVerified: new Date("2024-11-15") },
-      { key: "clear_checklists", valueNumeric: 1, unit: "boolean", lastVerified: new Date("2024-11-15") },
-      { key: "special_assessments_present", valueNumeric: 0, unit: "boolean", lastVerified: new Date("2024-11-15") },
-      { key: "debt_per_capita", valueNumeric: 1200, unit: "dollars", lastVerified: new Date("2024-11-15") },
-    ];
-
-    for (const mv of metricValues) {
+    for (const mv of hollandMetrics) {
       const def = getDef(mv.key);
       const existing = await prisma.metricValue.findFirst({
         where: { jurisdictionId: holland.id, metricDefId: def.id },
       });
-      if (!existing) {
-        const created = await prisma.metricValue.create({
-          data: {
-            jurisdictionId: holland.id,
-            metricDefId: def.id,
-            valueNumeric: mv.valueNumeric,
-            lastVerified: mv.lastVerified,
-            notes: mv.notes,
-          },
-        });
+      const valueData = {
+        jurisdictionId: holland.id,
+        metricDefId: def.id,
+        valueNumeric: mv.valueNumeric,
+        lastVerified: mv.lastVerified,
+        notes: mv.notes,
+      };
+      const createdOrUpdated = existing
+        ? await prisma.metricValue.update({ where: { id: existing.id }, data: valueData })
+        : await prisma.metricValue.create({ data: valueData });
 
-        // Add citations for key metrics
-        const citationMap: Record<string, { source: Awaited<ReturnType<typeof createSource>>; label: string }> = {
-          variance_approval_rate_5yr: { source: s1, label: "[1]" },
-          rezoning_approval_rate: { source: s5, label: "[2]" },
-          avg_permit_processing_days: { source: s3, label: "[3]" },
-          millage_rate: { source: s4, label: "[4]" },
-          zoning_amendments_10yr: { source: s5, label: "[5]" },
-          zoning_litigation_10yr: { source: s6, label: "[6]" },
-        };
-        const entry = citationMap[mv.key];
-        if (entry) {
+      if (mv.citationSource) {
+        const hasCitation = await prisma.citation.findFirst({
+          where: { metricValueId: createdOrUpdated.id, sourceId: mv.citationSource.id },
+        });
+        if (!hasCitation) {
           await prisma.citation.create({
             data: {
-              metricValueId: created.id,
-              sourceId: entry.source.id,
-              citationLabel: entry.label,
-              locatorText: "Board minutes / Planning records",
+              metricValueId: createdOrUpdated.id,
+              sourceId: mv.citationSource.id,
+              locatorText: mv.notes?.slice(0, 100) ?? null,
             },
           });
         }
@@ -201,33 +199,29 @@ async function main() {
     }
   }
 
-  // Olive Township - plausible placeholders
+  // Olive Township — verified transparency + fee schedule (2025-02-14)
   const olive = await prisma.jurisdiction.findUnique({ where: { slug: "olive-township" } });
   if (olive) {
-    const sOlive = await prisma.source.findUnique({
-      where: { url: "https://www.olivetownship.org/permits-fee-schedules" },
-    }) ?? await prisma.source.create({
-      data: { url: "https://www.olivetownship.org/permits-fee-schedules", title: "Olive Township Permit Fee Schedule", publisher: "Olive Township", retrievedDate: new Date() },
-    });
+    const sOlive = await createSource("https://www.olivetownship.org/permits-fee-schedules", "Olive Township Permit Fee Schedule", "Olive Township");
 
     const oliveMetrics = [
-      { key: "variance_approval_rate_5yr", valueNumeric: 78 },
-      { key: "rezoning_approval_rate", valueNumeric: 81 },
-      { key: "avg_permit_processing_days", valueNumeric: 28 },
-      { key: "millage_rate", valueNumeric: 38.2 },
-      { key: "zoning_amendments_10yr", valueNumeric: 12 },
-      { key: "zoning_litigation_10yr", valueNumeric: 1 },
-      { key: "required_permits_count", valueNumeric: 6 },
-      { key: "required_inspections_count", valueNumeric: 4 },
-      { key: "approval_gates_count", valueNumeric: 2 },
-      { key: "permit_cost_burden", valueNumeric: 48 },
-      { key: "fee_schedule_online", valueNumeric: 1 },
-      { key: "zoning_map_online", valueNumeric: 1 },
-      { key: "minutes_searchable", valueNumeric: 1 },
-      { key: "permit_portal", valueNumeric: 0 },
-      { key: "clear_checklists", valueNumeric: 1 },
-      { key: "special_assessments_present", valueNumeric: 0 },
-      { key: "debt_per_capita", valueNumeric: 800 },
+      { key: "variance_approval_rate_5yr", valueNumeric: null, lastVerified: new Date("2025-02-14"), notes: "Manual research: planning minutes", citationSource: sOlive },
+      { key: "rezoning_approval_rate", valueNumeric: null, lastVerified: new Date("2025-02-14"), notes: "Manual research", citationSource: sOlive },
+      { key: "avg_permit_processing_days", valueNumeric: null, lastVerified: new Date("2025-02-14"), notes: "TBD", citationSource: sOlive },
+      { key: "millage_rate", valueNumeric: null, lastVerified: new Date("2025-02-14"), notes: "TBD: county equalization", citationSource: sOlive },
+      { key: "zoning_amendments_10yr", valueNumeric: null, lastVerified: new Date("2025-02-14"), notes: "Manual research", citationSource: sOlive },
+      { key: "zoning_litigation_10yr", valueNumeric: null, lastVerified: new Date("2025-02-14"), notes: "Manual research: court records", citationSource: sOlive },
+      { key: "required_permits_count", valueNumeric: 6, lastVerified: new Date("2025-02-14"), notes: "Building, electrical, mechanical, plumbing, septic, well", citationSource: sOlive },
+      { key: "required_inspections_count", valueNumeric: null, lastVerified: new Date("2025-02-14"), notes: "Per-inspection fees in schedule", citationSource: sOlive },
+      { key: "approval_gates_count", valueNumeric: 3, lastVerified: new Date("2025-02-14"), notes: "Zoning, building, Ottawa County health", citationSource: sOlive },
+      { key: "permit_cost_burden", valueNumeric: null, lastVerified: new Date("2025-02-14"), notes: "Compute from fee schedule", citationSource: sOlive },
+      { key: "fee_schedule_online", valueNumeric: 1, lastVerified: new Date("2025-02-14"), notes: "Verified: permits-fee-schedules page", citationSource: sOlive },
+      { key: "zoning_map_online", valueNumeric: null, lastVerified: new Date("2025-02-14"), notes: "TBD", citationSource: sOlive },
+      { key: "minutes_searchable", valueNumeric: null, lastVerified: new Date("2025-02-14"), notes: "TBD", citationSource: sOlive },
+      { key: "permit_portal", valueNumeric: 0, lastVerified: new Date("2025-02-14"), notes: "Applications to office", citationSource: sOlive },
+      { key: "clear_checklists", valueNumeric: null, lastVerified: new Date("2025-02-14"), notes: "TBD", citationSource: sOlive },
+      { key: "special_assessments_present", valueNumeric: null, lastVerified: new Date("2025-02-14"), notes: "TBD", citationSource: sOlive },
+      { key: "debt_per_capita", valueNumeric: null, lastVerified: new Date("2025-02-14"), notes: "TBD: CAFR", citationSource: sOlive },
     ];
 
     for (const m of oliveMetrics) {
@@ -235,54 +229,88 @@ async function main() {
       const existing = await prisma.metricValue.findFirst({
         where: { jurisdictionId: olive.id, metricDefId: def.id },
       });
-      if (!existing) {
-        const created = await prisma.metricValue.create({
-          data: {
-            jurisdictionId: olive.id,
-            metricDefId: def.id,
-            valueNumeric: m.valueNumeric,
-            lastVerified: new Date("2024-10-01"),
-          },
+      const valueData = {
+        jurisdictionId: olive.id,
+        metricDefId: def.id,
+        valueNumeric: m.valueNumeric,
+        lastVerified: m.lastVerified,
+        notes: m.notes,
+      };
+      const createdOrUpdated = existing
+        ? await prisma.metricValue.update({ where: { id: existing.id }, data: valueData })
+        : await prisma.metricValue.create({ data: valueData });
+      if (m.citationSource) {
+        const hasCitation = await prisma.citation.findFirst({
+          where: { metricValueId: createdOrUpdated.id, sourceId: m.citationSource.id },
         });
-        await prisma.citation.create({
-          data: {
-            metricValueId: created.id,
-            sourceId: sOlive.id,
-            citationLabel: "[1]",
-            locatorText: "Fee schedule",
-          },
-        });
+        if (!hasCitation) {
+          await prisma.citation.create({
+            data: {
+              metricValueId: createdOrUpdated.id,
+              sourceId: m.citationSource.id,
+              locatorText: m.notes?.slice(0, 100) ?? null,
+            },
+          });
+        }
+      }
+    }
+
+    // Olive Township fee items (verified from fee schedule effective 01/01/2025)
+    const permitTypes = await prisma.permitType.findMany();
+    const getPt = (slug: string) => permitTypes.find((p) => p.slug === slug)!;
+    const oliveFees = [
+      { permitTypeSlug: "electrical", feeName: "New House", amount: 285, notes: "$380 with temporary service" },
+      { permitTypeSlug: "electrical", feeName: "Remodel", amount: 95, notes: "Per inspection" },
+      { permitTypeSlug: "mechanical", feeName: "New House", amount: 190 },
+      { permitTypeSlug: "mechanical", feeName: "Remodel", amount: 95, notes: "Per inspection" },
+      { permitTypeSlug: "plumbing", feeName: "New House", amount: 190, notes: "$285 with underground" },
+      { permitTypeSlug: "plumbing", feeName: "Remodel", amount: 95, notes: "Per inspection" },
+    ];
+    for (const f of oliveFees) {
+      const pt = getPt(f.permitTypeSlug);
+      const existingFee = await prisma.feeItem.findFirst({
+        where: { jurisdictionId: olive.id, permitTypeId: pt.id, feeName: f.feeName },
+      });
+      const feeData = {
+        jurisdictionId: olive.id,
+        permitTypeId: pt.id,
+        feeName: f.feeName,
+        amount: f.amount,
+        notes: f.notes ?? null,
+        sourceUrl: "https://www.olivetownship.org/permits-fee-schedules",
+        lastVerifiedDate: new Date("2025-02-14"),
+      };
+      if (existingFee) {
+        await prisma.feeItem.update({ where: { id: existingFee.id }, data: feeData });
+      } else {
+        await prisma.feeItem.create({ data: feeData });
       }
     }
   }
 
-  // Georgetown Township - plausible placeholders
+  // Georgetown Township — verified URLs, transparency TBD (2025-02-14)
   const georgetown = await prisma.jurisdiction.findUnique({ where: { slug: "georgetown-township" } });
   if (georgetown) {
-    const sGeo = await prisma.source.findUnique({
-      where: { url: "https://www.georgetown-mi.org/building" },
-    }) ?? await prisma.source.create({
-      data: { url: "https://www.georgetown-mi.org/building", title: "Georgetown Township Building Dept", publisher: "Georgetown Township", retrievedDate: new Date() },
-    });
+    const sGeo = await createSource("https://www.gtwp.com/193/Forms", "Georgetown Township Forms", "Georgetown Township");
 
     const geoMetrics = [
-      { key: "variance_approval_rate_5yr", valueNumeric: 71 },
-      { key: "rezoning_approval_rate", valueNumeric: 68 },
-      { key: "avg_permit_processing_days", valueNumeric: 45 },
-      { key: "millage_rate", valueNumeric: 44.1 },
-      { key: "zoning_amendments_10yr", valueNumeric: 24 },
-      { key: "zoning_litigation_10yr", valueNumeric: 5 },
-      { key: "required_permits_count", valueNumeric: 7 },
-      { key: "required_inspections_count", valueNumeric: 6 },
-      { key: "approval_gates_count", valueNumeric: 4 },
-      { key: "permit_cost_burden", valueNumeric: 62 },
-      { key: "fee_schedule_online", valueNumeric: 1 },
-      { key: "zoning_map_online", valueNumeric: 1 },
-      { key: "minutes_searchable", valueNumeric: 0 },
-      { key: "permit_portal", valueNumeric: 0 },
-      { key: "clear_checklists", valueNumeric: 0 },
-      { key: "special_assessments_present", valueNumeric: 1 },
-      { key: "debt_per_capita", valueNumeric: 2100 },
+      { key: "variance_approval_rate_5yr", valueNumeric: null, lastVerified: new Date("2025-02-14"), notes: "Manual research", citationSource: sGeo },
+      { key: "rezoning_approval_rate", valueNumeric: null, lastVerified: new Date("2025-02-14"), notes: "Manual research", citationSource: sGeo },
+      { key: "avg_permit_processing_days", valueNumeric: null, lastVerified: new Date("2025-02-14"), notes: "PCI determines", citationSource: sGeo },
+      { key: "millage_rate", valueNumeric: null, lastVerified: new Date("2025-02-14"), notes: "TBD", citationSource: sGeo },
+      { key: "zoning_amendments_10yr", valueNumeric: null, lastVerified: new Date("2025-02-14"), notes: "Manual research", citationSource: sGeo },
+      { key: "zoning_litigation_10yr", valueNumeric: null, lastVerified: new Date("2025-02-14"), notes: "Manual research", citationSource: sGeo },
+      { key: "required_permits_count", valueNumeric: 7, lastVerified: new Date("2025-02-14"), notes: "Building via PCI + zoning + septic/well", citationSource: sGeo },
+      { key: "required_inspections_count", valueNumeric: null, lastVerified: new Date("2025-02-14"), notes: "PCI determines", citationSource: sGeo },
+      { key: "approval_gates_count", valueNumeric: 4, lastVerified: new Date("2025-02-14"), notes: "Zoning, PCI building, Ottawa County health, road commission", citationSource: sGeo },
+      { key: "permit_cost_burden", valueNumeric: null, lastVerified: new Date("2025-02-14"), notes: "Zoning: $50/$100; building via PCI", citationSource: sGeo },
+      { key: "fee_schedule_online", valueNumeric: null, lastVerified: new Date("2025-02-14"), notes: "PCI determines fees; zoning fees on FAQ", citationSource: sGeo },
+      { key: "zoning_map_online", valueNumeric: null, lastVerified: new Date("2025-02-14"), notes: "TBD", citationSource: sGeo },
+      { key: "minutes_searchable", valueNumeric: null, lastVerified: new Date("2025-02-14"), notes: "TBD: meeting agendas/minutes", citationSource: sGeo },
+      { key: "permit_portal", valueNumeric: null, lastVerified: new Date("2025-02-14"), notes: "Forms on gtwp.com", citationSource: sGeo },
+      { key: "clear_checklists", valueNumeric: null, lastVerified: new Date("2025-02-14"), notes: "TBD", citationSource: sGeo },
+      { key: "special_assessments_present", valueNumeric: null, lastVerified: new Date("2025-02-14"), notes: "TBD", citationSource: sGeo },
+      { key: "debt_per_capita", valueNumeric: null, lastVerified: new Date("2025-02-14"), notes: "TBD", citationSource: sGeo },
     ];
 
     for (const m of geoMetrics) {
@@ -290,28 +318,67 @@ async function main() {
       const existing = await prisma.metricValue.findFirst({
         where: { jurisdictionId: georgetown.id, metricDefId: def.id },
       });
-      if (!existing) {
-        const created = await prisma.metricValue.create({
-          data: {
-            jurisdictionId: georgetown.id,
-            metricDefId: def.id,
-            valueNumeric: m.valueNumeric,
-            lastVerified: new Date("2024-09-20"),
-          },
+      const valueData = {
+        jurisdictionId: georgetown.id,
+        metricDefId: def.id,
+        valueNumeric: m.valueNumeric,
+        lastVerified: m.lastVerified,
+        notes: m.notes,
+      };
+      const createdOrUpdated = existing
+        ? await prisma.metricValue.update({ where: { id: existing.id }, data: valueData })
+        : await prisma.metricValue.create({ data: valueData });
+      if (m.citationSource) {
+        const hasCitation = await prisma.citation.findFirst({
+          where: { metricValueId: createdOrUpdated.id, sourceId: m.citationSource.id },
         });
-        await prisma.citation.create({
-          data: {
-            metricValueId: created.id,
-            sourceId: sGeo.id,
-            citationLabel: "[1]",
-            locatorText: "Building dept",
-          },
-        });
+        if (!hasCitation) {
+          await prisma.citation.create({
+            data: {
+              metricValueId: createdOrUpdated.id,
+              sourceId: m.citationSource.id,
+              locatorText: m.notes?.slice(0, 100) ?? null,
+            },
+          });
+        }
       }
     }
   }
 
-  console.log("Seed complete: Holland, Olive, Georgetown townships");
+  // Ottawa County — environmental health fees (septic, well) for all townships
+  const ottawa = await prisma.jurisdiction.findUnique({ where: { slug: "ottawa-county" } });
+  if (ottawa) {
+    const permitTypes = await prisma.permitType.findMany();
+    const getPt = (slug: string) => permitTypes.find((p) => p.slug === slug)!;
+    const ottawaFees = [
+      { permitTypeSlug: "septic", feeName: "Septic NEW (Private Single Family)", amount: 535, sourceUrl: "https://miottawa.org/fee-schedule" },
+      { permitTypeSlug: "septic", feeName: "Septic & Well NEW (Private Single Family)", amount: 980, sourceUrl: "https://miottawa.org/fee-schedule" },
+      { permitTypeSlug: "well", feeName: "Well NEW (Private Single Family)", amount: 445, sourceUrl: "https://miottawa.org/fee-schedule" },
+      { permitTypeSlug: "soil_eval", feeName: "Vacant Land Evaluation / Perk Test", amount: 400, sourceUrl: "https://miottawa.org/fee-schedule" },
+      { permitTypeSlug: "soil_eval", feeName: "Real Estate Transfer Evaluation", amount: 345, sourceUrl: "https://miottawa.org/fee-schedule" },
+    ];
+    for (const f of ottawaFees) {
+      const pt = getPt(f.permitTypeSlug);
+      const existingFee = await prisma.feeItem.findFirst({
+        where: { jurisdictionId: ottawa.id, permitTypeId: pt.id, feeName: f.feeName },
+      });
+      const feeData = {
+        jurisdictionId: ottawa.id,
+        permitTypeId: pt.id,
+        feeName: f.feeName,
+        amount: f.amount,
+        sourceUrl: f.sourceUrl,
+        lastVerifiedDate: new Date("2025-02-14"),
+      };
+      if (existingFee) {
+        await prisma.feeItem.update({ where: { id: existingFee.id }, data: feeData });
+      } else {
+        await prisma.feeItem.create({ data: feeData });
+      }
+    }
+  }
+
+  console.log("Seed complete: Holland, Olive, Georgetown townships + Ottawa County");
 }
 
 main()
