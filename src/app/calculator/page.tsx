@@ -173,7 +173,7 @@ export default function CalculatorPage() {
         href="/"
         className="inline-block text-sm text-blue-600 hover:underline"
       >
-        View Ottawa & Allegan fee schedules →
+        View Ottawa County fee schedules →
       </Link>
     </div>
   );

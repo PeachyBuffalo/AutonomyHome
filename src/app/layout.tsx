@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "AutonomyHome | Michigan DIY Homebuilder Permit & Fee Directory",
+  title: "AutonomyHome | Pre-Purchase Governance Intelligence",
   description:
-    "Required permits and costs by township and county for DIY homebuilders in Michigan. Building, septic, well, and trade permits with official fee schedules.",
+    "Data-driven due diligence for property development in Michigan. Permits, fees, approval metrics. Residential and commercial paths. No advocacy—decision support only.",
 };
 
 export default function RootLayout({
@@ -21,7 +21,7 @@ export default function RootLayout({
               AutonomyHome
             </a>
             <p className="mt-0.5 text-sm text-stone-500">
-              Michigan DIY Homebuilder Permit & Fee Directory
+              Pre-Purchase Governance Intelligence · Michigan
             </p>
           </div>
         </header>
@@ -29,8 +29,8 @@ export default function RootLayout({
         <footer className="border-t border-stone-200 bg-stone-100 py-6">
           <div className="mx-auto max-w-5xl px-4 sm:px-6">
             <p className="text-xs text-stone-500">
-              Informational only. Always verify with the jurisdiction. We do not
-              provide legal or professional advice.
+              Decision-support tool. Informational only. Always verify with the
+              jurisdiction. We do not provide legal or professional advice.
             </p>
           </div>
         </footer>
