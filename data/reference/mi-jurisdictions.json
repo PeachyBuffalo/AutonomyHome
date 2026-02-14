@@ -1,0 +1,36 @@
+{
+  "state": {
+    "name": "Michigan",
+    "slug": "michigan",
+    "type": "state",
+    "website": "https://www.michigan.gov"
+  },
+  "counties": [
+    {
+      "name": "Ottawa County",
+      "slug": "ottawa-county",
+      "type": "county",
+      "website": "https://miottawa.org"
+    }
+  ],
+  "municipalities": [
+    {
+      "name": "Holland Charter Township",
+      "slug": "holland-charter-township",
+      "type": "township",
+      "county": "Ottawa"
+    },
+    {
+      "name": "Olive Township",
+      "slug": "olive-township",
+      "type": "township",
+      "county": "Ottawa"
+    },
+    {
+      "name": "Georgetown Township",
+      "slug": "georgetown-township",
+      "type": "township",
+      "county": "Ottawa"
+    }
+  ]
+}

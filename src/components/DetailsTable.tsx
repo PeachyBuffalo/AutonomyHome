@@ -2,6 +2,7 @@ import { getStalenessBadge } from "@/lib/scoring";
 
 type MetricValue = {
   id: string;
+  status: string;
   valueNumeric: number | null;
   valueText: string | null;
   lastVerified: Date | null;
@@ -53,7 +54,11 @@ export function DetailsTable({
           {filtered.map((mv) => {
             const badge = getStalenessBadge(mv.lastVerified);
             const displayValue =
-              mv.valueNumeric !== null
+              mv.status === "NOT_APPLICABLE"
+                ? "N/A"
+                : mv.status === "FAILED"
+                  ? "Failed"
+                  : mv.valueNumeric !== null
                 ? mv.metricDef.unit === "percent"
                   ? `${mv.valueNumeric}%`
                   : mv.metricDef.unit === "days"
@@ -65,7 +70,7 @@ export function DetailsTable({
                         : mv.metricDef.unit === "boolean"
                           ? mv.valueNumeric ? "Yes" : "No"
                           : mv.valueNumeric
-                : mv.valueText ?? "—";
+                : mv.valueText ?? "Unknown";
 
             return (
               <tr key={mv.id} className="bg-white">

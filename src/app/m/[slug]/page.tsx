@@ -70,6 +70,7 @@ export default async function MunicipalityPage({
     valueNumeric: mv.valueNumeric,
     valueText: mv.valueText,
     unit: mv.metricDef.unit,
+    status: mv.status,
   }));
 
   const regulatory = computeRegulatoryIntensity(metrics);

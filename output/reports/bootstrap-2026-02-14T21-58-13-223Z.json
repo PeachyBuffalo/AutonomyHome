@@ -1,0 +1,10 @@
+{
+  "status": "ok",
+  "sourceFile": "/Users/peachybuffalo/GitHubProjects/AutonomyHome/data/reference/mi-jurisdictions.json",
+  "createdAt": "2026-02-14T21:58:13.223Z",
+  "totals": {
+    "states": 1,
+    "counties": 1,
+    "municipalities": 3
+  }
+}
