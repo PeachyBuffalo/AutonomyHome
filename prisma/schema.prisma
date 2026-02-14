@@ -1,0 +1,88 @@
+// AutonomyHome - Michigan DIY Homebuilder Permit & Fee Directory
+// Data model for jurisdictions, permit types, fees, and source documents
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Jurisdiction {
+  id                String      @id @default(cuid())
+  name              String
+  type              JurisdictionType // township | city | county
+  county            String?     // for townships/cities: which county they're in
+  website           String?
+  phone             String?
+  buildingDeptLink  String?
+  healthDeptLink    String?
+  address           String?
+  officeHours       String?
+  notes             String?
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+
+  feeItems          FeeItem[]
+  sourceDocs        SourceDoc[]
+}
+
+enum JurisdictionType {
+  township
+  city
+  county
+}
+
+model PermitType {
+  id          String   @id @default(cuid())
+  slug        String   @unique // building, electrical, plumbing, mechanical, zoning, driveway, septic, well, soil_eval
+  name        String
+  description String?
+  category    String?  // e.g. "building", "trade", "environmental"
+  sortOrder   Int      @default(0)
+
+  feeItems    FeeItem[]
+}
+
+model FeeItem {
+  id               String   @id @default(cuid())
+  jurisdictionId   String
+  permitTypeId     String
+  feeName          String   // e.g. "Residential septic permit – new"
+  amount           Float?   // flat amount when units = flat
+  formulaText      String?  // e.g. "$X per $1,000 valuation"
+  units            FeeUnits @default(flat)
+  notes            String?
+  effectiveDate    DateTime?
+  sourceUrl        String?
+  lastVerifiedDate DateTime?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  jurisdiction     Jurisdiction @relation(fields: [jurisdictionId], references: [id], onDelete: Cascade)
+  permitType       PermitType   @relation(fields: [permitTypeId], references: [id], onDelete: Cascade)
+}
+
+enum FeeUnits {
+  flat
+  per_thousand_valuation
+  per_sqft
+  per_acre
+  other
+}
+
+model SourceDoc {
+  id             String   @id @default(cuid())
+  jurisdictionId String
+  url            String
+  documentTitle  String?
+  publishedDate  DateTime?
+  effectiveDate  DateTime?
+  filetype       String?  // pdf, html
+  retrievedDate  DateTime @default(now())
+  notes          String?
+
+  jurisdiction   Jurisdiction @relation(fields: [jurisdictionId], references: [id], onDelete: Cascade)
+}
