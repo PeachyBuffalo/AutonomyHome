@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --permit-green: #166534;
+  --permit-amber: #b45309;
+  --permit-red: #b91c1c;
+}

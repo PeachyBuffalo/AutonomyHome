@@ -13,7 +13,7 @@ datasource db {
 model Jurisdiction {
   id                String      @id @default(cuid())
   name              String
-  type              JurisdictionType // township | city | county
+  type              String      // township | city | county
   county            String?     // for townships/cities: which county they're in
   website           String?
   phone             String?
@@ -27,12 +27,6 @@ model Jurisdiction {
 
   feeItems          FeeItem[]
   sourceDocs        SourceDoc[]
-}
-
-enum JurisdictionType {
-  township
-  city
-  county
 }
 
 model PermitType {
@@ -53,7 +47,7 @@ model FeeItem {
   feeName          String   // e.g. "Residential septic permit – new"
   amount           Float?   // flat amount when units = flat
   formulaText      String?  // e.g. "$X per $1,000 valuation"
-  units            FeeUnits @default(flat)
+  units            String   @default("flat") // flat | per_thousand_valuation | per_sqft | per_acre | other
   notes            String?
   effectiveDate    DateTime?
   sourceUrl        String?
@@ -63,14 +57,6 @@ model FeeItem {
 
   jurisdiction     Jurisdiction @relation(fields: [jurisdictionId], references: [id], onDelete: Cascade)
   permitType       PermitType   @relation(fields: [permitTypeId], references: [id], onDelete: Cascade)
-}
-
-enum FeeUnits {
-  flat
-  per_thousand_valuation
-  per_sqft
-  per_acre
-  other
 }
 
 model SourceDoc {
