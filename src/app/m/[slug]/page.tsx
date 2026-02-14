@@ -7,6 +7,7 @@ import {
   computePredictability,
   computeFiscalBurden,
   computeTransparencyGrade,
+  computeDataConfidence,
   getStalenessBadge,
 } from "@/lib/scoring";
 import type { MetricValueRow } from "@/lib/scoring";
@@ -75,21 +76,26 @@ export default async function MunicipalityPage({
   const predictability = computePredictability(metrics);
   const fiscal = computeFiscalBurden(metrics);
   const transparency = computeTransparencyGrade(metrics);
+  const { stars: dataConfidenceStars, dataQualityNote } = computeDataConfidence(metrics);
 
   const lastVerified = jurisdiction.lastVerified ?? jurisdiction.metricValues[0]?.lastVerified ?? null;
   const staleness = getStalenessBadge(lastVerified);
 
   const summaryLines = [
-    regulatory.score > 70
-      ? "Higher regulatory friction. Expect multiple inspections and longer processing times."
-      : regulatory.score > 40
-        ? "Moderate regulatory friction. Expect multiple inspections and average processing times."
-        : "Lower regulatory friction. Fewer approval gates and faster processing.",
-    predictability.score > 70
-      ? "High development predictability. Consistent approval patterns."
-      : predictability.score > 40
-        ? "Moderate predictability. Some variance in approval outcomes."
-        : "Lower predictability. More ordinance changes and potential for delays.",
+    regulatory.score != null
+      ? regulatory.score > 70
+        ? "Higher regulatory friction. Expect multiple inspections and longer processing times."
+        : regulatory.score > 40
+          ? "Moderate regulatory friction. Expect multiple inspections and average processing times."
+          : "Lower regulatory friction. Fewer approval gates and faster processing."
+      : "Insufficient data for regulatory intensity.",
+    predictability.score != null
+      ? predictability.score > 70
+        ? "High development predictability. Consistent approval patterns."
+        : predictability.score > 40
+          ? "Moderate predictability. Some variance in approval outcomes."
+          : "Lower predictability. More ordinance changes and potential for delays."
+      : "Insufficient data for predictability.",
   ];
 
   return (
@@ -131,6 +137,8 @@ export default async function MunicipalityPage({
         predictabilityDrivers={predictability.drivers}
         fiscalDrivers={fiscal.drivers}
         transparencyDrivers={transparency.drivers}
+        dataConfidenceStars={dataConfidenceStars}
+        dataQualityNote={dataQualityNote}
       />
 
       <div className="grid gap-6 lg:grid-cols-3">
