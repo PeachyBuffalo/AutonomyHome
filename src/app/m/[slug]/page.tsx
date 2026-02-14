@@ -60,7 +60,11 @@ export default async function MunicipalityPage({
 
   if (!jurisdiction) notFound();
 
-  const metrics: MetricValueRow[] = jurisdiction.metricValues.map((mv) => ({
+  const pathFilteredValues = jurisdiction.metricValues.filter((mv) =>
+    path === "commercial" ? mv.metricDef.pathCommercial : mv.metricDef.pathResidential
+  );
+
+  const metrics: MetricValueRow[] = pathFilteredValues.map((mv) => ({
     key: mv.metricDef.key,
     valueNumeric: mv.valueNumeric,
     valueText: mv.valueText,
@@ -133,13 +137,13 @@ export default async function MunicipalityPage({
         <section className="lg:col-span-2">
           <h2 className="text-lg font-semibold text-stone-800">Details</h2>
           <DetailsTable
-            metricValues={jurisdiction.metricValues}
+            metricValues={pathFilteredValues}
             path={path}
           />
         </section>
         <section>
           <h2 className="text-lg font-semibold text-stone-800">Sources</h2>
-          <SourcesPanel metricValues={jurisdiction.metricValues} />
+          <SourcesPanel metricValues={pathFilteredValues} />
         </section>
       </div>
 
