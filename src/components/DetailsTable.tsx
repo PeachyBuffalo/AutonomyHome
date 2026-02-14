@@ -58,11 +58,13 @@ export function DetailsTable({
                   ? `${mv.valueNumeric}%`
                   : mv.metricDef.unit === "days"
                     ? `${mv.valueNumeric} days`
-                    : mv.metricDef.unit === "mills"
-                      ? mv.valueNumeric
-                      : mv.metricDef.unit === "boolean"
-                        ? mv.valueNumeric ? "Yes" : "No"
-                        : mv.valueNumeric
+                    : mv.metricDef.unit === "dollars"
+                      ? `$${Number(mv.valueNumeric).toLocaleString()}`
+                      : mv.metricDef.unit === "mills"
+                        ? mv.valueNumeric
+                        : mv.metricDef.unit === "boolean"
+                          ? mv.valueNumeric ? "Yes" : "No"
+                          : mv.valueNumeric
                 : mv.valueText ?? "—";
 
             return (

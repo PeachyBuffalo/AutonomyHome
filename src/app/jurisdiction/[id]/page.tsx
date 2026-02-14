@@ -7,6 +7,7 @@ import {
   computePredictability,
   computeFiscalBurden,
   computeTransparencyGrade,
+  computeDataConfidence,
   getStalenessBadge,
 } from "@/lib/scoring";
 import type { MetricValueRow } from "@/lib/scoring";
@@ -88,8 +89,9 @@ export default async function JurisdictionPage({
   const predictability = computePredictability(metrics);
   const fiscal = computeFiscalBurden(metrics);
   const transparency = computeTransparencyGrade(metrics);
+  const { stars: dataConfidenceStars, dataQualityNote } = computeDataConfidence(metrics);
 
-  const dimensionScores: { dimension: string; score: number | string; label: string }[] = [
+  const dimensionScores: { dimension: string; score: number | string | null; label: string }[] = [
     { dimension: "regulatory_intensity", score: regulatory.score, label: DIMENSION_LABELS.regulatory_intensity },
     { dimension: "predictability", score: predictability.score, label: DIMENSION_LABELS.predictability },
     { dimension: "fiscal_burden", score: fiscal.score, label: DIMENSION_LABELS.fiscal_burden },
@@ -161,9 +163,21 @@ export default async function JurisdictionPage({
       {/* Dimension scores + raw data */}
       {(dimensionScores.length > 0 || jurisdiction.metricValues.length > 0) && (
         <section>
-          <h2 className="text-lg font-semibold text-stone-800">
-            Governance Profile ({path})
-          </h2>
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <h2 className="text-lg font-semibold text-stone-800">
+              Governance Profile ({path})
+            </h2>
+            {dataQualityNote != null && (
+              <div className="flex items-center gap-2 text-sm text-stone-500">
+                <span className="inline-flex gap-0.5" aria-label={`${dataConfidenceStars} of 5 stars data confidence`}>
+                  {[1, 2, 3, 4, 5].map((i) => (
+                    <span key={i} className={i <= dataConfidenceStars ? "text-amber-500" : "text-stone-200"} aria-hidden>★</span>
+                  ))}
+                </span>
+                <span>{dataQualityNote}</span>
+              </div>
+            )}
+          </div>
           <p className="mt-1 text-sm text-stone-600">
             <Link href="/methodology" className="text-blue-600 hover:underline">
               Methodology →
@@ -179,8 +193,8 @@ export default async function JurisdictionPage({
                 <h3 className="text-sm font-medium text-stone-700">
                   {d.label}
                 </h3>
-                <p className="mt-2 text-2xl font-semibold text-stone-900">
-                  {typeof d.score === "string" ? d.score : d.score}
+                <p className={`mt-2 text-2xl font-semibold ${d.score == null ? "text-stone-400" : "text-stone-900"}`}>
+                  {d.score == null ? "—" : typeof d.score === "string" ? d.score : d.score}
                   {typeof d.score === "number" && (
                     <span className="ml-1 text-sm font-normal text-stone-500">
                       / 100

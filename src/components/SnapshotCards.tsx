@@ -20,6 +20,22 @@ function gradeColor(grade: string) {
   return "bg-red-100 text-red-800";
 }
 
+function Stars({ count }: { count: number }) {
+  return (
+    <span className="inline-flex gap-0.5" aria-label={`${count} of 5 stars data confidence`}>
+      {[1, 2, 3, 4, 5].map((i) => (
+        <span
+          key={i}
+          className={i <= count ? "text-amber-500" : "text-stone-200"}
+          aria-hidden
+        >
+          ★
+        </span>
+      ))}
+    </span>
+  );
+}
+
 export function SnapshotCards({
   regulatoryScore,
   predictabilityScore,
@@ -30,73 +46,91 @@ export function SnapshotCards({
   predictabilityDrivers,
   fiscalDrivers,
   transparencyDrivers,
+  dataConfidenceStars = 0,
+  dataQualityNote,
 }: {
-  regulatoryScore: number;
-  predictabilityScore: number;
-  fiscalScore: number;
-  transparencyGrade: string;
+  regulatoryScore: number | null;
+  predictabilityScore: number | null;
+  fiscalScore: number | null;
+  transparencyGrade: string | null;
   summaryLines: string[];
   regulatoryDrivers: { label: string; contribution: number }[];
   predictabilityDrivers: { label: string; contribution: number }[];
   fiscalDrivers: { label: string; contribution: number }[];
-  transparencyDrivers: { label: string; present: boolean }[];
+  transparencyDrivers: { label: string; present: boolean; hasData?: boolean }[];
+  dataConfidenceStars?: number;
+  dataQualityNote?: string;
 }) {
   const [expanded, setExpanded] = useState<string | null>(null);
 
   return (
     <div className="space-y-6">
-      <h2 className="text-lg font-semibold text-stone-800">Snapshot</h2>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h2 className="text-lg font-semibold text-stone-800">Snapshot</h2>
+        {dataQualityNote != null && (
+          <div className="flex items-center gap-2 text-sm text-stone-500">
+            <Stars count={dataConfidenceStars} />
+            <span>{dataQualityNote}</span>
+          </div>
+        )}
+      </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div className="rounded-lg border border-stone-200 bg-white p-4 shadow-sm">
           <p className="text-sm font-medium text-stone-500">
             Regulatory Intensity
           </p>
-          <p className="mt-1 text-2xl font-bold text-stone-900">
-            {regulatoryScore.toFixed(1)}
+          <p className={`mt-1 text-2xl font-bold ${regulatoryScore == null ? "text-stone-400" : "text-stone-900"}`}>
+            {regulatoryScore != null ? regulatoryScore.toFixed(1) : "—"}
           </p>
           <p className="text-xs text-stone-400">0–100, higher = more friction</p>
-          <span
-            className={`mt-2 inline-block rounded px-2 py-0.5 text-xs font-medium ${scoreColor(
-              regulatoryScore,
-              true
-            )}`}
-          >
-            {regulatoryScore >= 70 ? "High" : regulatoryScore >= 40 ? "Moderate" : "Low"}
-          </span>
+          {regulatoryScore != null && (
+            <span
+              className={`mt-2 inline-block rounded px-2 py-0.5 text-xs font-medium ${scoreColor(
+                regulatoryScore,
+                true
+              )}`}
+            >
+              {regulatoryScore >= 70 ? "High" : regulatoryScore >= 40 ? "Moderate" : "Low"}
+            </span>
+          )}
         </div>
 
         <div className="rounded-lg border border-stone-200 bg-white p-4 shadow-sm">
           <p className="text-sm font-medium text-stone-500">
             Development Predictability
           </p>
-          <p className="mt-1 text-2xl font-bold text-stone-900">
-            {predictabilityScore.toFixed(1)}
+          <p className={`mt-1 text-2xl font-bold ${predictabilityScore == null ? "text-stone-400" : "text-stone-900"}`}>
+            {predictabilityScore != null ? predictabilityScore.toFixed(1) : "—"}
           </p>
           <p className="text-xs text-stone-400">0–100, higher = more predictable</p>
-          <span
-            className={`mt-2 inline-block rounded px-2 py-0.5 text-xs font-medium ${scoreColor(
-              predictabilityScore
-            )}`}
-          >
-            {predictabilityScore >= 70 ? "High" : predictabilityScore >= 40 ? "Moderate" : "Low"}
-          </span>
+          {predictabilityScore != null && (
+            <span
+              className={`mt-2 inline-block rounded px-2 py-0.5 text-xs font-medium ${scoreColor(
+                predictabilityScore
+              )}`}
+            >
+              {predictabilityScore >= 70 ? "High" : predictabilityScore >= 40 ? "Moderate" : "Low"}
+            </span>
+          )}
         </div>
 
         <div className="rounded-lg border border-stone-200 bg-white p-4 shadow-sm">
           <p className="text-sm font-medium text-stone-500">Fiscal Burden</p>
-          <p className="mt-1 text-2xl font-bold text-stone-900">
-            {fiscalScore.toFixed(1)}
+          <p className={`mt-1 text-2xl font-bold ${fiscalScore == null ? "text-stone-400" : "text-stone-900"}`}>
+            {fiscalScore != null ? fiscalScore.toFixed(1) : "—"}
           </p>
           <p className="text-xs text-stone-400">0–100, higher = more costly</p>
-          <span
-            className={`mt-2 inline-block rounded px-2 py-0.5 text-xs font-medium ${scoreColor(
-              fiscalScore,
-              true
-            )}`}
-          >
-            {fiscalScore >= 70 ? "High" : fiscalScore >= 40 ? "Moderate" : "Low"}
-          </span>
+          {fiscalScore != null && (
+            <span
+              className={`mt-2 inline-block rounded px-2 py-0.5 text-xs font-medium ${scoreColor(
+                fiscalScore,
+                true
+              )}`}
+            >
+              {fiscalScore >= 70 ? "High" : fiscalScore >= 40 ? "Moderate" : "Low"}
+            </span>
+          )}
         </div>
 
         <div className="rounded-lg border border-stone-200 bg-white p-4 shadow-sm">
@@ -104,16 +138,18 @@ export function SnapshotCards({
             Administrative Transparency
           </p>
           <p className="mt-1 text-2xl font-bold text-stone-900">
-            {transparencyGrade}
+            {transparencyGrade ?? "—"}
           </p>
           <p className="text-xs text-stone-400">A+ to F</p>
-          <span
-            className={`mt-2 inline-block rounded px-2 py-0.5 text-xs font-medium ${gradeColor(
-              transparencyGrade
-            )}`}
-          >
-            {transparencyGrade}
-          </span>
+          {transparencyGrade != null && (
+            <span
+              className={`mt-2 inline-block rounded px-2 py-0.5 text-xs font-medium ${gradeColor(
+                transparencyGrade
+              )}`}
+            >
+              {transparencyGrade}
+            </span>
+          )}
         </div>
       </div>
 
@@ -180,7 +216,7 @@ export function SnapshotCards({
               <ul className="mt-1 space-y-1 text-sm text-stone-600">
                 {transparencyDrivers.map((d, i) => (
                   <li key={i}>
-                    {d.present ? "✓" : "✗"} {d.label}
+                    {d.hasData === false ? "—" : d.present ? "✓" : "✗"} {d.label}
                   </li>
                 ))}
               </ul>
