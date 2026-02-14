@@ -1,0 +1,271 @@
+{
+  "generatedAt": "2026-02-14T21:59:39.121Z",
+  "staleDays": 90,
+  "levels": {
+    "MUNICIPALITY": {
+      "count": 3,
+      "paths": {
+        "MUNICIPALITY:residential": {
+          "applicableMetrics": 42,
+          "measuredLike": 16,
+          "staleCount": 0,
+          "statusCounts": {
+            "MEASURED": 14,
+            "DERIVED": 2,
+            "UNKNOWN": 26,
+            "NOT_APPLICABLE": 0,
+            "FAILED": 0
+          },
+          "percentMeasuredLike": 38
+        },
+        "MUNICIPALITY:commercial": {
+          "applicableMetrics": 42,
+          "measuredLike": 10,
+          "staleCount": 0,
+          "statusCounts": {
+            "MEASURED": 10,
+            "DERIVED": 0,
+            "UNKNOWN": 32,
+            "NOT_APPLICABLE": 0,
+            "FAILED": 0
+          },
+          "percentMeasuredLike": 24
+        }
+      }
+    },
+    "COUNTY": {
+      "count": 1,
+      "paths": {
+        "COUNTY:residential": {
+          "applicableMetrics": 14,
+          "measuredLike": 1,
+          "staleCount": 0,
+          "statusCounts": {
+            "MEASURED": 1,
+            "DERIVED": 0,
+            "UNKNOWN": 13,
+            "NOT_APPLICABLE": 0,
+            "FAILED": 0
+          },
+          "percentMeasuredLike": 7
+        },
+        "COUNTY:commercial": {
+          "applicableMetrics": 18,
+          "measuredLike": 1,
+          "staleCount": 0,
+          "statusCounts": {
+            "MEASURED": 1,
+            "DERIVED": 0,
+            "UNKNOWN": 17,
+            "NOT_APPLICABLE": 0,
+            "FAILED": 0
+          },
+          "percentMeasuredLike": 6
+        }
+      }
+    },
+    "STATE": {
+      "count": 1,
+      "paths": {
+        "STATE:residential": {
+          "applicableMetrics": 10,
+          "measuredLike": 0,
+          "staleCount": 0,
+          "statusCounts": {
+            "MEASURED": 0,
+            "DERIVED": 0,
+            "UNKNOWN": 10,
+            "NOT_APPLICABLE": 0,
+            "FAILED": 0
+          },
+          "percentMeasuredLike": 0
+        },
+        "STATE:commercial": {
+          "applicableMetrics": 14,
+          "measuredLike": 0,
+          "staleCount": 0,
+          "statusCounts": {
+            "MEASURED": 0,
+            "DERIVED": 0,
+            "UNKNOWN": 14,
+            "NOT_APPLICABLE": 0,
+            "FAILED": 0
+          },
+          "percentMeasuredLike": 0
+        }
+      }
+    }
+  },
+  "jurisdictions": [
+    {
+      "slug": "ottawa-county",
+      "name": "Ottawa County",
+      "level": "COUNTY",
+      "type": "county",
+      "paths": {
+        "residential": {
+          "applicableMetrics": 14,
+          "measuredLike": 1,
+          "percentMeasuredLike": 7,
+          "staleCount": 0,
+          "statusCounts": {
+            "MEASURED": 1,
+            "DERIVED": 0,
+            "UNKNOWN": 13,
+            "NOT_APPLICABLE": 0,
+            "FAILED": 0
+          }
+        },
+        "commercial": {
+          "applicableMetrics": 18,
+          "measuredLike": 1,
+          "percentMeasuredLike": 6,
+          "staleCount": 0,
+          "statusCounts": {
+            "MEASURED": 1,
+            "DERIVED": 0,
+            "UNKNOWN": 17,
+            "NOT_APPLICABLE": 0,
+            "FAILED": 0
+          }
+        }
+      }
+    },
+    {
+      "slug": "georgetown-township",
+      "name": "Georgetown Township",
+      "level": "MUNICIPALITY",
+      "type": "township",
+      "paths": {
+        "residential": {
+          "applicableMetrics": 14,
+          "measuredLike": 5,
+          "percentMeasuredLike": 36,
+          "staleCount": 0,
+          "statusCounts": {
+            "MEASURED": 4,
+            "DERIVED": 1,
+            "UNKNOWN": 9,
+            "NOT_APPLICABLE": 0,
+            "FAILED": 0
+          }
+        },
+        "commercial": {
+          "applicableMetrics": 14,
+          "measuredLike": 3,
+          "percentMeasuredLike": 21,
+          "staleCount": 0,
+          "statusCounts": {
+            "MEASURED": 3,
+            "DERIVED": 0,
+            "UNKNOWN": 11,
+            "NOT_APPLICABLE": 0,
+            "FAILED": 0
+          }
+        }
+      }
+    },
+    {
+      "slug": "holland-charter-township",
+      "name": "Holland Charter Township",
+      "level": "MUNICIPALITY",
+      "type": "township",
+      "paths": {
+        "residential": {
+          "applicableMetrics": 14,
+          "measuredLike": 5,
+          "percentMeasuredLike": 36,
+          "staleCount": 0,
+          "statusCounts": {
+            "MEASURED": 5,
+            "DERIVED": 0,
+            "UNKNOWN": 9,
+            "NOT_APPLICABLE": 0,
+            "FAILED": 0
+          }
+        },
+        "commercial": {
+          "applicableMetrics": 14,
+          "measuredLike": 4,
+          "percentMeasuredLike": 29,
+          "staleCount": 0,
+          "statusCounts": {
+            "MEASURED": 4,
+            "DERIVED": 0,
+            "UNKNOWN": 10,
+            "NOT_APPLICABLE": 0,
+            "FAILED": 0
+          }
+        }
+      }
+    },
+    {
+      "slug": "olive-township",
+      "name": "Olive Township",
+      "level": "MUNICIPALITY",
+      "type": "township",
+      "paths": {
+        "residential": {
+          "applicableMetrics": 14,
+          "measuredLike": 6,
+          "percentMeasuredLike": 43,
+          "staleCount": 0,
+          "statusCounts": {
+            "MEASURED": 5,
+            "DERIVED": 1,
+            "UNKNOWN": 8,
+            "NOT_APPLICABLE": 0,
+            "FAILED": 0
+          }
+        },
+        "commercial": {
+          "applicableMetrics": 14,
+          "measuredLike": 3,
+          "percentMeasuredLike": 21,
+          "staleCount": 0,
+          "statusCounts": {
+            "MEASURED": 3,
+            "DERIVED": 0,
+            "UNKNOWN": 11,
+            "NOT_APPLICABLE": 0,
+            "FAILED": 0
+          }
+        }
+      }
+    },
+    {
+      "slug": "michigan",
+      "name": "Michigan",
+      "level": "STATE",
+      "type": "state",
+      "paths": {
+        "residential": {
+          "applicableMetrics": 10,
+          "measuredLike": 0,
+          "percentMeasuredLike": 0,
+          "staleCount": 0,
+          "statusCounts": {
+            "MEASURED": 0,
+            "DERIVED": 0,
+            "UNKNOWN": 10,
+            "NOT_APPLICABLE": 0,
+            "FAILED": 0
+          }
+        },
+        "commercial": {
+          "applicableMetrics": 14,
+          "measuredLike": 0,
+          "percentMeasuredLike": 0,
+          "staleCount": 0,
+          "statusCounts": {
+            "MEASURED": 0,
+            "DERIVED": 0,
+            "UNKNOWN": 14,
+            "NOT_APPLICABLE": 0,
+            "FAILED": 0
+          }
+        }
+      }
+    }
+  ]
+}

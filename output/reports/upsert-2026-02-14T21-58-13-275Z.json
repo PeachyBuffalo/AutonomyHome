@@ -1,0 +1,10 @@
+{
+  "createdAt": "2026-02-14T21:58:13.275Z",
+  "collectionRunId": "cmlmuyi2x000ed7dfuuxydp9n",
+  "processed": 5,
+  "upserted": 4,
+  "errorCount": 1,
+  "errors": [
+    "Citation required but missing: olive-township/permit_cost_burden"
+  ]
+}

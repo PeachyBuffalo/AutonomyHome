@@ -1,0 +1,70 @@
+{
+  "version": 2,
+  "collectionRun": {
+    "source": "seed-fixture",
+    "trigger": "manual"
+  },
+  "metrics": [
+    {
+      "jurisdictionSlug": "holland-charter-township",
+      "metricKey": "millage_rate",
+      "status": "MEASURED",
+      "valueNumeric": 31.98,
+      "lastVerified": "2026-02-14",
+      "confidence": 1,
+      "notes": "2025 total PRE in Holland school district",
+      "citations": [
+        {
+          "sourceUrl": "https://www.hct.holland.mi.us/departments/treasurer/tax-millage-rates",
+          "title": "2025 Tax Millage Rates",
+          "publisher": "Holland Charter Township",
+          "locatorText": "2025 Total PRE"
+        }
+      ]
+    },
+    {
+      "jurisdictionSlug": "olive-township",
+      "metricKey": "fee_schedule_online",
+      "status": "MEASURED",
+      "valueNumeric": 1,
+      "lastVerified": "2026-02-14",
+      "confidence": 1,
+      "notes": "Permit fee schedule page present",
+      "citations": [
+        {
+          "sourceUrl": "https://www.olivetownship.org/permits-fee-schedules",
+          "title": "Permit Fee Schedule",
+          "publisher": "Olive Township",
+          "locatorText": "Permits Fee Schedules page"
+        }
+      ]
+    },
+    {
+      "jurisdictionSlug": "ottawa-county",
+      "metricKey": "county_zoning_authority_present",
+      "status": "MEASURED",
+      "valueNumeric": 0,
+      "lastVerified": "2026-02-14",
+      "confidence": 0.9,
+      "notes": "County is not primary zoning authority for target municipalities",
+      "citations": [
+        {
+          "sourceUrl": "https://miottawa.org",
+          "title": "Ottawa County",
+          "publisher": "Ottawa County",
+          "locatorText": "County services structure"
+        }
+      ]
+    },
+    {
+      "jurisdictionSlug": "michigan",
+      "metricKey": "state_business_filing_turnaround_days",
+      "status": "UNKNOWN",
+      "lastVerified": "2026-02-14",
+      "confidence": 0.2,
+      "notes": "Automated extraction pipeline target",
+      "citations": []
+    }
+  ],
+  "feeItems": []
+}

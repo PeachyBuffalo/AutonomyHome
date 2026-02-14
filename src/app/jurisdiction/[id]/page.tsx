@@ -83,6 +83,7 @@ export default async function JurisdictionPage({
     valueNumeric: mv.valueNumeric,
     valueText: mv.valueText,
     unit: mv.metricDef.unit,
+    status: mv.status,
   }));
 
   const regulatory = computeRegulatoryIntensity(metrics);
@@ -232,6 +233,15 @@ export default async function JurisdictionPage({
                         {m.valueText && (
                           <span className="text-sm text-stone-600">
                             {m.valueText}
+                          </span>
+                        )}
+                        {!m.valueText && m.valueNumeric === null && (
+                          <span className="text-sm text-stone-500">
+                            {m.status === "NOT_APPLICABLE"
+                              ? "N/A"
+                              : m.status === "FAILED"
+                                ? "Failed"
+                                : "Unknown"}
                           </span>
                         )}
                         <span

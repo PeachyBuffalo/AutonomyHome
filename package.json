@@ -9,9 +9,17 @@
     "lint": "next lint",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
-    "db:seed": "tsx prisma/seed.ts",
-    "data:import": "tsx scripts/import-collected-data.ts",
-    "data:coverage": "tsx scripts/metrics-coverage-report.ts"
+    "db:seed": "node --experimental-strip-types prisma/seed.ts",
+    "data:import": "node --experimental-strip-types scripts/import-collected-data.ts",
+    "data:coverage": "node --experimental-strip-types scripts/metrics-coverage-report.ts",
+    "data:coverage:all": "node --experimental-strip-types scripts/metrics-coverage-report.ts",
+    "collect:bootstrap": "node --experimental-strip-types scripts/collect/bootstrap-jurisdictions.ts",
+    "collect:discover": "node --experimental-strip-types scripts/collect/discover-sources.ts",
+    "collect:extract": "node --experimental-strip-types scripts/collect/extract-metrics.ts",
+    "collect:normalize": "node --experimental-strip-types scripts/collect/normalize-metrics.ts",
+    "collect:upsert": "node --experimental-strip-types scripts/collect/upsert-metrics.ts",
+    "collect:all": "node --experimental-strip-types scripts/collect/run-all.ts",
+    "collect:stale": "node --experimental-strip-types scripts/collect/stale-scan.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",

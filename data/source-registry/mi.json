@@ -1,0 +1,77 @@
+{
+  "version": 1,
+  "state": "MI",
+  "sources": [
+    {
+      "jurisdictionSlug": "michigan",
+      "metricKeys": [
+        "state_environmental_permit_processing_days",
+        "state_business_filing_turnaround_days",
+        "state_code_cycle_lag_months",
+        "state_land_use_statute_amendments_10yr",
+        "state_property_tax_burden_index"
+      ],
+      "url": "local://collected-data-v2",
+      "contentType": "json_api",
+      "reliability": "OFFICIAL",
+      "extractorId": "fixture_collected_v2"
+    },
+    {
+      "jurisdictionSlug": "ottawa-county",
+      "metricKeys": [
+        "county_health_permit_processing_days",
+        "county_road_permit_processing_days",
+        "county_zoning_authority_present",
+        "county_land_use_appeal_approval_rate_5yr",
+        "fee_schedule_online"
+      ],
+      "url": "local://collected-data-v2",
+      "contentType": "json_api",
+      "reliability": "OFFICIAL",
+      "extractorId": "fixture_collected_v2"
+    },
+    {
+      "jurisdictionSlug": "holland-charter-township",
+      "metricKeys": [
+        "required_permits_count",
+        "approval_gates_count",
+        "fee_schedule_online",
+        "permit_portal",
+        "millage_rate"
+      ],
+      "url": "local://collected-data-v2",
+      "contentType": "json_api",
+      "reliability": "OFFICIAL",
+      "extractorId": "fixture_collected_v2"
+    },
+    {
+      "jurisdictionSlug": "olive-township",
+      "metricKeys": [
+        "required_permits_count",
+        "required_inspections_count",
+        "approval_gates_count",
+        "permit_cost_burden",
+        "fee_schedule_online",
+        "permit_portal"
+      ],
+      "url": "local://collected-data-v2",
+      "contentType": "json_api",
+      "reliability": "OFFICIAL",
+      "extractorId": "fixture_collected_v2"
+    },
+    {
+      "jurisdictionSlug": "georgetown-township",
+      "metricKeys": [
+        "required_permits_count",
+        "approval_gates_count",
+        "permit_cost_burden",
+        "fee_schedule_online",
+        "permit_portal"
+      ],
+      "url": "local://collected-data-v2",
+      "contentType": "json_api",
+      "reliability": "OFFICIAL",
+      "extractorId": "fixture_collected_v2"
+    }
+  ]
+}
