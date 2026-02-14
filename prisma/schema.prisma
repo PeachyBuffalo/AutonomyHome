@@ -1,5 +1,5 @@
-// AutonomyHome - Michigan DIY Homebuilder Permit & Fee Directory
-// Data model for jurisdictions, permit types, fees, and source documents
+// Municipal Governance & Buildability - Michigan
+// Zillow-style Snapshot + Moody's-style Details
 
 generator client {
   provider = "prisma-client-js"
@@ -11,30 +11,89 @@ datasource db {
 }
 
 model Jurisdiction {
-  id                String      @id @default(cuid())
+  id                String   @id @default(cuid())
   name              String
-  type              String      // township | city | county
-  county            String?     // for townships/cities: which county they're in
+  slug              String   @unique
+  type              String   // township | city | county
+  county            String?
+  state             String   @default("MI")
   website           String?
   phone             String?
-  buildingDeptLink  String?
+  buildingDeptLink   String?
   healthDeptLink    String?
   address           String?
   officeHours       String?
   notes             String?
-  createdAt         DateTime    @default(now())
-  updatedAt         DateTime    @updatedAt
+  lastVerified      DateTime?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 
   feeItems          FeeItem[]
   sourceDocs        SourceDoc[]
+  metricValues      MetricValue[]
+}
+
+model MetricDef {
+  id                  String   @id @default(cuid())
+  key                 String   @unique
+  label               String
+  unit                String?  // percent | days | count | dollars | formula
+  windowYears         Int?     // e.g. 5 for "5-year avg"
+  pathResidential     Boolean  @default(true)
+  pathCommercial      Boolean  @default(true)
+  indexComponent      String?  // regulatory_intensity | predictability | fiscal_burden | transparency
+  weight              Float?   // for index computation
+  sortOrder           Int      @default(0)
+
+  metricValues        MetricValue[]
+}
+
+model MetricValue {
+  id             String    @id @default(cuid())
+  jurisdictionId String
+  metricDefId    String
+  valueNumeric   Float?
+  valueText      String?
+  windowStart    DateTime?
+  windowEnd      DateTime?
+  lastVerified   DateTime?
+  confidence     Float?    // 0-1
+  notes         String?
+
+  jurisdiction   Jurisdiction @relation(fields: [jurisdictionId], references: [id], onDelete: Cascade)
+  metricDef      MetricDef   @relation(fields: [metricDefId], references: [id], onDelete: Cascade)
+  citations      Citation[]
+}
+
+model Source {
+  id             String    @id @default(cuid())
+  url            String    @unique
+  title          String?
+  publisher      String?
+  publishedDate  DateTime?
+  retrievedDate  DateTime  @default(now())
+
+  citations      Citation[]
+}
+
+model Citation {
+  id             String   @id @default(cuid())
+  metricValueId  String
+  sourceId       String
+  quoteSnippet   String?  // max 200 chars
+  locatorText    String?  // e.g. "p.3 fee schedule"
+  citationLabel  String?  // e.g. "[1]"
+
+  metricValue    MetricValue @relation(fields: [metricValueId], references: [id], onDelete: Cascade)
+  source         Source     @relation(fields: [sourceId], references: [id], onDelete: Cascade)
 }
 
 model PermitType {
   id          String   @id @default(cuid())
-  slug        String   @unique // building, electrical, plumbing, mechanical, zoning, driveway, septic, well, soil_eval
+  slug        String   @unique
   name        String
   description String?
-  category    String?  // e.g. "building", "trade", "environmental"
+  category    String?
   sortOrder   Int      @default(0)
 
   feeItems    FeeItem[]
@@ -44,10 +103,10 @@ model FeeItem {
   id               String   @id @default(cuid())
   jurisdictionId   String
   permitTypeId     String
-  feeName          String   // e.g. "Residential septic permit – new"
-  amount           Float?   // flat amount when units = flat
-  formulaText      String?  // e.g. "$X per $1,000 valuation"
-  units            String   @default("flat") // flat | per_thousand_valuation | per_sqft | per_acre | other
+  feeName          String
+  amount           Float?
+  formulaText      String?
+  units            String   @default("flat")
   notes            String?
   effectiveDate    DateTime?
   sourceUrl        String?
@@ -66,7 +125,7 @@ model SourceDoc {
   documentTitle  String?
   publishedDate  DateTime?
   effectiveDate  DateTime?
-  filetype       String?  // pdf, html
+  filetype       String?
   retrievedDate  DateTime @default(now())
   notes          String?
 
