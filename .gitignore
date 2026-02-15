@@ -40,3 +40,7 @@ prisma/dev.db-journal
 
 # generated reports
 output/reports/*.json
+
+# local social data exports
+data/nextdoor-export.json
+data/social-provider-config.local.json

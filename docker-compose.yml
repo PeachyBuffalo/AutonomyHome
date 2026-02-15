@@ -1,0 +1,22 @@
+services:
+  app:
+    build: .
+    image: autonomy-home:latest
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: file:/app/prisma/dev.db
+      NODE_ENV: production
+      HOSTNAME: 0.0.0.0
+      PORT: 3000
+      X_BEARER_TOKEN: ${X_BEARER_TOKEN:-}
+      FACEBOOK_GRAPH_ACCESS_TOKEN: ${FACEBOOK_GRAPH_ACCESS_TOKEN:-}
+      NEXTDOOR_EXPORT_PATH: ${NEXTDOOR_EXPORT_PATH:-/app/data/nextdoor-export.json}
+    volumes:
+      - autonomy_home_prisma:/app/prisma
+      - autonomy_home_reports:/app/output/reports
+    restart: unless-stopped
+
+volumes:
+  autonomy_home_prisma:
+  autonomy_home_reports:

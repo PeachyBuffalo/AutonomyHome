@@ -1,0 +1,116 @@
+{
+  "windowDays": 90,
+  "fallbackInputPath": "data/social-sentiment.json",
+  "providers": {
+    "file": {
+      "enabled": true,
+      "inputPath": "data/social-sentiment.json"
+    },
+    "x": {
+      "enabled": true,
+      "bearerTokenEnv": "X_BEARER_TOKEN",
+      "maxResultsPerQuery": 12
+    },
+    "facebook": {
+      "enabled": true,
+      "accessTokenEnv": "FACEBOOK_GRAPH_ACCESS_TOKEN",
+      "maxPostsPerPage": 12
+    },
+    "neighborhood": {
+      "enabled": true,
+      "maxResultsPerQuery": 8
+    },
+    "nextdoor": {
+      "enabled": false,
+      "exportPathEnv": "NEXTDOOR_EXPORT_PATH",
+      "exportFilePath": "data/nextdoor-export.json"
+    }
+  },
+  "jurisdictions": [
+    {
+      "slug": "holland-charter-township",
+      "x": {
+        "officialHandles": ["hollandcharter"],
+        "searchQueries": [
+          "\"Holland Charter Township\" permit",
+          "\"Holland Township MI\" zoning"
+        ]
+      },
+      "facebook": {
+        "pageIds": ["hollandchartertownship"]
+      },
+      "neighborhood": {
+        "subreddits": ["WestMichigan", "grandrapids"],
+        "keywords": ["Holland Township permit", "Holland Township zoning"]
+      }
+    },
+    {
+      "slug": "olive-township",
+      "x": {
+        "officialHandles": ["olivetownship"],
+        "searchQueries": [
+          "\"Olive Township\" permit",
+          "\"Olive Township MI\" zoning"
+        ]
+      },
+      "facebook": {
+        "pageIds": ["olivetownship"]
+      },
+      "neighborhood": {
+        "subreddits": ["WestMichigan", "Michigan"],
+        "keywords": ["Olive Township permit", "Olive Township zoning"]
+      }
+    },
+    {
+      "slug": "georgetown-township",
+      "x": {
+        "officialHandles": ["gtownship"],
+        "searchQueries": [
+          "\"Georgetown Township\" permit",
+          "\"Georgetown Township MI\" zoning"
+        ]
+      },
+      "facebook": {
+        "pageIds": ["georgetowntownshipmi"]
+      },
+      "neighborhood": {
+        "subreddits": ["grandrapids", "WestMichigan"],
+        "keywords": ["Georgetown Township permit", "Georgetown Township zoning"]
+      }
+    },
+    {
+      "slug": "ottawa-county",
+      "x": {
+        "officialHandles": ["OttawaCounty"],
+        "searchQueries": [
+          "\"Ottawa County\" permit",
+          "\"Ottawa County Michigan\" zoning"
+        ]
+      },
+      "facebook": {
+        "pageIds": ["OttawaCounty"]
+      },
+      "neighborhood": {
+        "subreddits": ["WestMichigan", "Michigan"],
+        "keywords": ["Ottawa County permit", "Ottawa County zoning"]
+      }
+    },
+    {
+      "slug": "michigan",
+      "x": {
+        "officialHandles": ["MichSoS", "MIAttyGen"],
+        "searchQueries": [
+          "\"Michigan\" building code",
+          "\"Michigan\" business filing"
+        ]
+      },
+      "facebook": {
+        "pageIds": ["Michigan.gov"]
+      },
+      "neighborhood": {
+        "subreddits": ["Michigan"],
+        "keywords": ["Michigan building code", "Michigan permit process"]
+      }
+    }
+  ]
+}

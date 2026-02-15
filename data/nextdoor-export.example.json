@@ -1,0 +1,13 @@
+{
+  "mentions": [
+    {
+      "jurisdictionSlug": "holland-charter-township",
+      "platform": "nextdoor",
+      "sourceType": "PUBLIC_MENTION",
+      "authorHandle": "example_user",
+      "postUrl": "https://nextdoor.com/p/example-post-id/",
+      "postText": "Permit office response times improved this quarter.",
+      "postedAt": "2026-02-10T12:00:00.000Z"
+    }
+  ]
+}

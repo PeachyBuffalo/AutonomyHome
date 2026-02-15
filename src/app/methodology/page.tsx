@@ -86,12 +86,13 @@ export default function MethodologyPage() {
 
         <div className="rounded-lg border border-stone-200 bg-white p-6">
           <h2 className="text-lg font-semibold text-stone-800">
-            Social Sentiment Metrics (90-day)
+            Community Pulse Metrics (90-day)
           </h2>
           <p className="mt-2 text-stone-600">
-            Sentiment is collected from official jurisdiction social pages and
-            public mentions that reference the area. Each post is scored using
-            deterministic positive/negative keyword matching.
+            Sentiment is collected through provider plugins for X, Facebook, and
+            neighborhood sources (Reddit plus optional Nextdoor export), with
+            file-based fallback entries. Each post is scored using deterministic
+            positive/negative keyword matching.
           </p>
           <ul className="mt-4 list-disc space-y-2 pl-6 text-stone-600">
             <li>Community sentiment score (90-day): derived, normalized 0-100</li>

@@ -13,9 +13,52 @@ Zillow-style Snapshot + Moody's-style Details for property development due dilig
 ```bash
 npm install
 npm run db:push    # Create SQLite DB
-npm run db:seed    # Seed Holland, Olive, Georgetown
+npm run db:seed    # Seed sample jurisdictions + metrics
 npm run dev        # http://localhost:3000
 ```
+
+## Deployment
+
+### Environment
+
+Copy `.env.example` to `.env` and set production values:
+
+- `DATABASE_URL` (required): use a persistent SQLite path (for containers: `file:/app/prisma/dev.db`)
+- `X_BEARER_TOKEN` (optional): enables X provider in `collect:sentiment`
+- `FACEBOOK_GRAPH_ACCESS_TOKEN` (optional): enables Facebook provider in `collect:sentiment`
+- `NEXTDOOR_EXPORT_PATH` (optional): local export path for Nextdoor import
+
+### Production Start (without Docker)
+
+```bash
+npm ci
+npm run build
+npm run deploy:prepare
+npm run start
+```
+
+The app exposes a health check at `/api/health`.
+
+First deploy only (optional sample data):
+
+```bash
+npm run deploy:seed
+```
+
+### Docker Deploy
+
+```bash
+# Build and run
+docker compose up --build -d
+
+# Follow logs
+docker compose logs -f app
+```
+
+`docker-compose.yml` mounts persistent volumes for:
+
+- `/app/prisma` (SQLite database)
+- `/app/output/reports` (coverage/stale reports)
 
 ## Routes
 
@@ -30,6 +73,7 @@ npm run dev        # http://localhost:3000
 - **Olive Township** — Verified: fee schedule (electrical, mechanical, plumbing), transparency. Real fee amounts.
 - **Georgetown Township** — Verified: URLs (gtwp.com), zoning fees. Uses PCI for building.
 - **Ottawa County** — Verified: septic ($535), well ($445), soil eval ($400) from county health.
+- **Michigan (state)** — State-level profile row for statewide metrics and rollup coverage.
 
 See [docs/DATA_COLLECTION_PLAN.md](docs/DATA_COLLECTION_PLAN.md) for the full data collection plan. Research templates in `docs/research/`.
 

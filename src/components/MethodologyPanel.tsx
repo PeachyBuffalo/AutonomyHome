@@ -47,12 +47,12 @@ export function MethodologyPanel() {
 
       <div>
         <h3 className="font-medium text-stone-900">
-          Social Sentiment (90-day)
+          Community Pulse (90-day)
         </h3>
         <p className="mt-1">
-          Aggregated from official social pages and public mentions tied to the
-          jurisdiction. Mentions are scored with a deterministic lexicon model
-          and normalized to a 0–100 sentiment score.
+          Aggregated from X, Facebook, and neighborhood sources (Reddit and optional
+          Nextdoor exports), plus configured manual inputs. Mentions are scored with
+          a deterministic lexicon model and normalized to a 0–100 sentiment score.
         </p>
       </div>
 
