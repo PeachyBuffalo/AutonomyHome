@@ -1,0 +1,77 @@
+{
+  "windowDays": 90,
+  "mentions": [
+    {
+      "jurisdictionSlug": "holland-charter-township",
+      "platform": "facebook",
+      "sourceType": "OFFICIAL_PAGE",
+      "authorHandle": "hollandchartertownship",
+      "postUrl": "https://www.facebook.com/hollandchartertownship/posts/101",
+      "postText": "Building permit wait times improved this month and residents reported a smooth process.",
+      "postedAt": "2026-02-03T12:00:00.000Z"
+    },
+    {
+      "jurisdictionSlug": "holland-charter-township",
+      "platform": "reddit",
+      "sourceType": "PUBLIC_MENTION",
+      "authorHandle": "westmi_builder",
+      "postUrl": "https://www.reddit.com/r/WestMichigan/comments/holland_permit_feedback_2026/",
+      "postText": "Approval was quick, but checklist instructions were confusing for first-time applicants.",
+      "postedAt": "2026-01-20T12:00:00.000Z"
+    },
+    {
+      "jurisdictionSlug": "olive-township",
+      "platform": "facebook",
+      "sourceType": "OFFICIAL_PAGE",
+      "authorHandle": "olivetownship",
+      "postUrl": "https://www.facebook.com/olivetownship/posts/205",
+      "postText": "Updated permit packet is now online. Staff answered questions quickly and clearly.",
+      "postedAt": "2026-02-01T12:00:00.000Z"
+    },
+    {
+      "jurisdictionSlug": "olive-township",
+      "platform": "reddit",
+      "sourceType": "PUBLIC_MENTION",
+      "authorHandle": "newhome_ottawa",
+      "postUrl": "https://www.reddit.com/r/Michigan/comments/olive_township_permit_experience/",
+      "postText": "The permit process worked, but inspections felt slow and the scheduling portal was frustrating.",
+      "postedAt": "2026-01-25T12:00:00.000Z"
+    },
+    {
+      "jurisdictionSlug": "georgetown-township",
+      "platform": "facebook",
+      "sourceType": "OFFICIAL_PAGE",
+      "authorHandle": "georgetowntownshipmi",
+      "postUrl": "https://www.facebook.com/georgetowntownshipmi/posts/88",
+      "postText": "New online forms reduced permit delays and improved communication this quarter.",
+      "postedAt": "2026-02-06T12:00:00.000Z"
+    },
+    {
+      "jurisdictionSlug": "georgetown-township",
+      "platform": "reddit",
+      "sourceType": "PUBLIC_MENTION",
+      "authorHandle": "jenisonresident",
+      "postUrl": "https://www.reddit.com/r/grandrapids/comments/georgetown_zoning_timeline/",
+      "postText": "Zoning review took longer than expected, but staff were helpful and professional.",
+      "postedAt": "2026-01-18T12:00:00.000Z"
+    },
+    {
+      "jurisdictionSlug": "ottawa-county",
+      "platform": "x",
+      "sourceType": "PUBLIC_MENTION",
+      "authorHandle": "ottawacountywatch",
+      "postUrl": "https://x.com/ottawacountywatch/status/1900012345678901234",
+      "postText": "County health permit responses were clear this month, though turnaround still feels slow.",
+      "postedAt": "2026-02-04T12:00:00.000Z"
+    },
+    {
+      "jurisdictionSlug": "michigan",
+      "platform": "reddit",
+      "sourceType": "PUBLIC_MENTION",
+      "authorHandle": "midwest_dev",
+      "postUrl": "https://www.reddit.com/r/Michigan/comments/state_building_code_feedback_2026/",
+      "postText": "State filing updates were helpful and transparent, but code updates remain difficult to track.",
+      "postedAt": "2026-02-02T12:00:00.000Z"
+    }
+  ]
+}

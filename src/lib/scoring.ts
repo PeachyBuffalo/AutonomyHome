@@ -8,12 +8,17 @@ export type MetricValueRow = {
   valueNumeric: number | null;
   valueText: string | null;
   unit: string | null;
+  status?: string | null;
 };
 
 /** Metric has a usable value (not null/undefined) */
 function hasValue(m: MetricValueRow): boolean {
+  const status = m.status?.toUpperCase();
+  if (status && status !== "MEASURED" && status !== "DERIVED") return false;
   if (m.valueNumeric !== null && m.valueNumeric !== undefined) return true;
-  const t = m.valueText?.trim();
+  const t = m.valueText?.trim().toLowerCase();
+  if (!t) return false;
+  if (status) return true;
   return t === "yes" || t === "true" || t === "1" || t === "no" || t === "false" || t === "0";
 }
 
@@ -200,7 +205,10 @@ export function computeTransparencyGrade(metrics: MetricValueRow[]): {
   for (const key of keys) {
     const m = metrics.find((x) => x.key === key);
     const hasData = m ? hasValue(m) : false;
-    const present = hasData && (m!.valueNumeric! > 0 || ["yes", "true", "1"].includes((m!.valueText ?? "").toLowerCase()));
+    const present = hasData && (
+      (m?.valueNumeric != null && m.valueNumeric > 0) ||
+      ["yes", "true", "1"].includes((m?.valueText ?? "").trim().toLowerCase())
+    );
     results.push({ key, present, hasData });
   }
 

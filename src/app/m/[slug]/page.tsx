@@ -16,8 +16,21 @@ import { DetailsTable } from "@/components/DetailsTable";
 import { SourcesPanel } from "@/components/SourcesPanel";
 import { MethodologyPanel } from "@/components/MethodologyPanel";
 import { PathToggle } from "@/components/PathToggle";
+import { SocialSentimentPanel } from "@/components/SocialSentimentPanel";
 
 export const dynamic = "force-dynamic";
+
+function locationLabelForJurisdiction(j: {
+  type: string;
+  level?: string | null;
+  county: string | null;
+  state: string;
+}): string {
+  const level = j.level?.toUpperCase();
+  if (level === "STATE" || j.type === "state") return j.state;
+  if (level === "COUNTY" || j.type === "county") return j.state;
+  return j.county ? `${j.county} County, ${j.state}` : j.state;
+}
 
 export async function generateMetadata({
   params,
@@ -27,12 +40,13 @@ export async function generateMetadata({
   const { slug } = await params;
   const j = await prisma.jurisdiction.findUnique({
     where: { slug },
-    select: { name: true, county: true },
+    select: { name: true, county: true, state: true, type: true, level: true },
   });
   if (!j) return { title: "Municipality" };
+  const location = locationLabelForJurisdiction(j);
   return {
     title: `${j.name} | Municipal Governance & Buildability`,
-    description: `Governance profile for ${j.name}, ${j.county ?? "Michigan"} County. Permits, predictability, fiscal burden, transparency.`,
+    description: `Governance profile for ${j.name} (${location}). Permits, predictability, fiscal burden, and transparency.`,
   };
 }
 
@@ -46,6 +60,7 @@ export default async function MunicipalityPage({
   const { slug } = await params;
   const { path: pathParam } = await searchParams;
   const path = pathParam === "commercial" ? "commercial" : "residential";
+  const sentimentWindowStart = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000);
 
   const jurisdiction = await prisma.jurisdiction.findUnique({
     where: { slug },
@@ -55,6 +70,11 @@ export default async function MunicipalityPage({
           metricDef: true,
           citations: { include: { source: true } },
         },
+      },
+      socialMentions: {
+        where: { postedAt: { gte: sentimentWindowStart } },
+        orderBy: { postedAt: "desc" },
+        take: 20,
       },
     },
   });
@@ -67,6 +87,7 @@ export default async function MunicipalityPage({
 
   const metrics: MetricValueRow[] = pathFilteredValues.map((mv) => ({
     key: mv.metricDef.key,
+    status: mv.status,
     valueNumeric: mv.valueNumeric,
     valueText: mv.valueText,
     unit: mv.metricDef.unit,
@@ -80,6 +101,7 @@ export default async function MunicipalityPage({
 
   const lastVerified = jurisdiction.lastVerified ?? jurisdiction.metricValues[0]?.lastVerified ?? null;
   const staleness = getStalenessBadge(lastVerified);
+  const location = locationLabelForJurisdiction(jurisdiction);
 
   const summaryLines = [
     regulatory.score != null
@@ -109,7 +131,7 @@ export default async function MunicipalityPage({
           {jurisdiction.name}
         </h1>
         <p className="mt-1 text-stone-600">
-          {jurisdiction.county} County, {jurisdiction.state}
+          {location}
         </p>
         <div className="mt-2 flex items-center gap-2">
           <span
@@ -152,6 +174,9 @@ export default async function MunicipalityPage({
         <section>
           <h2 className="text-lg font-semibold text-stone-800">Sources</h2>
           <SourcesPanel metricValues={pathFilteredValues} />
+          <div className="mt-4">
+            <SocialSentimentPanel mentions={jurisdiction.socialMentions} />
+          </div>
         </section>
       </div>
 

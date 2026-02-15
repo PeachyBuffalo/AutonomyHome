@@ -2,6 +2,7 @@ import { getStalenessBadge } from "@/lib/scoring";
 
 type MetricValue = {
   id: string;
+  status: string;
   valueNumeric: number | null;
   valueText: string | null;
   lastVerified: Date | null;
@@ -52,20 +53,27 @@ export function DetailsTable({
         <tbody className="divide-y divide-stone-100">
           {filtered.map((mv) => {
             const badge = getStalenessBadge(mv.lastVerified);
+            const status = mv.status.toUpperCase();
             const displayValue =
-              mv.valueNumeric !== null
-                ? mv.metricDef.unit === "percent"
-                  ? `${mv.valueNumeric}%`
-                  : mv.metricDef.unit === "days"
-                    ? `${mv.valueNumeric} days`
-                    : mv.metricDef.unit === "dollars"
-                      ? `$${Number(mv.valueNumeric).toLocaleString()}`
-                      : mv.metricDef.unit === "mills"
-                        ? mv.valueNumeric
-                        : mv.metricDef.unit === "boolean"
-                          ? mv.valueNumeric ? "Yes" : "No"
-                          : mv.valueNumeric
-                : mv.valueText ?? "—";
+              status === "NOT_APPLICABLE"
+                ? "N/A"
+                : status === "UNKNOWN"
+                  ? "Unknown"
+                  : status === "FAILED"
+                    ? "Collection failed"
+                    : mv.valueNumeric !== null
+                      ? mv.metricDef.unit === "percent"
+                        ? `${mv.valueNumeric}%`
+                        : mv.metricDef.unit === "days"
+                          ? `${mv.valueNumeric} days`
+                          : mv.metricDef.unit === "dollars"
+                            ? `$${Number(mv.valueNumeric).toLocaleString()}`
+                            : mv.metricDef.unit === "mills"
+                              ? mv.valueNumeric
+                              : mv.metricDef.unit === "boolean"
+                                ? mv.valueNumeric ? "Yes" : "No"
+                                : mv.valueNumeric
+                      : (mv.valueText?.trim() || "Unknown");
 
             return (
               <tr key={mv.id} className="bg-white">

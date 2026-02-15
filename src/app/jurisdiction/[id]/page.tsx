@@ -80,6 +80,7 @@ export default async function JurisdictionPage({
 
   const metrics: MetricValueRow[] = jurisdiction.metricValues.map((mv) => ({
     key: mv.metricDef.key,
+    status: mv.status,
     valueNumeric: mv.valueNumeric,
     valueText: mv.valueText,
     unit: mv.metricDef.unit,
@@ -211,6 +212,23 @@ export default async function JurisdictionPage({
               <ul className="mt-2 space-y-2">
                 {jurisdiction.metricValues.map((m) => {
                   const badge = getStalenessBadge(m.lastVerified);
+                  const status = m.status.toUpperCase();
+                  const displayValue =
+                    status === "NOT_APPLICABLE"
+                      ? "N/A"
+                      : status === "UNKNOWN"
+                        ? "Unknown"
+                        : status === "FAILED"
+                          ? "Collection failed"
+                          : m.valueNumeric !== null
+                            ? m.metricDef.unit === "percent"
+                              ? `${m.valueNumeric}%`
+                              : m.metricDef.unit === "days"
+                                ? `${m.valueNumeric} days`
+                                : m.metricDef.unit === "dollars"
+                                  ? `$${m.valueNumeric}`
+                                  : m.valueNumeric
+                            : (m.valueText?.trim() || "Unknown");
                   return (
                     <li
                       key={m.id}
@@ -218,22 +236,7 @@ export default async function JurisdictionPage({
                     >
                       <span className="text-stone-700">{m.metricDef.label}</span>
                       <div className="flex items-center gap-2">
-                        {m.valueNumeric !== null && (
-                          <span className="font-medium">
-                            {m.metricDef.unit === "percent"
-                              ? `${m.valueNumeric}%`
-                              : m.metricDef.unit === "days"
-                                ? `${m.valueNumeric} days`
-                                : m.metricDef.unit === "dollars"
-                                  ? `$${m.valueNumeric}`
-                                  : m.valueNumeric}
-                          </span>
-                        )}
-                        {m.valueText && (
-                          <span className="text-sm text-stone-600">
-                            {m.valueText}
-                          </span>
-                        )}
+                        <span className="font-medium text-stone-700">{displayValue}</span>
                         <span
                           className={`rounded px-2 py-0.5 text-xs text-white ${badge.color}`}
                         >

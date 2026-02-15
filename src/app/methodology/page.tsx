@@ -83,6 +83,22 @@ export default function MethodologyPage() {
             5/5 = A-, 4/5 = B+, 3/5 = C, 2/5 = C-, 1/5 = D, 0/5 = F
           </p>
         </div>
+
+        <div className="rounded-lg border border-stone-200 bg-white p-6">
+          <h2 className="text-lg font-semibold text-stone-800">
+            Social Sentiment Metrics (90-day)
+          </h2>
+          <p className="mt-2 text-stone-600">
+            Sentiment is collected from official jurisdiction social pages and
+            public mentions that reference the area. Each post is scored using
+            deterministic positive/negative keyword matching.
+          </p>
+          <ul className="mt-4 list-disc space-y-2 pl-6 text-stone-600">
+            <li>Community sentiment score (90-day): derived, normalized 0-100</li>
+            <li>Community sentiment mentions analyzed (90-day): derived count</li>
+            <li>Citations link back to the source posts used in the calculation</li>
+          </ul>
+        </div>
       </section>
 
       <Link href="/" className="block text-sm font-medium text-stone-600 hover:text-stone-900">

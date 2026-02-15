@@ -40,6 +40,7 @@ type CollectedData = {
     Record<
       string,
       {
+        status?: "MEASURED" | "DERIVED" | "UNKNOWN" | "NOT_APPLICABLE" | "FAILED";
         valueNumeric?: number;
         valueText?: string;
         lastVerified: string;
@@ -127,9 +128,15 @@ async function main() {
         });
 
         const valueData = {
+          status:
+            mv.status ??
+            (mv.valueNumeric !== undefined || (mv.valueText != null && mv.valueText.trim() !== "")
+              ? "MEASURED"
+              : "UNKNOWN"),
           valueNumeric: mv.valueNumeric ?? null,
           valueText: mv.valueText ?? null,
           lastVerified: new Date(mv.lastVerified),
+          collectedAt: new Date(mv.lastVerified),
           notes: mv.notes ?? null,
         };
 

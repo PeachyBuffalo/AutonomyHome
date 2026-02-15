@@ -45,6 +45,17 @@ export function MethodologyPanel() {
         </p>
       </div>
 
+      <div>
+        <h3 className="font-medium text-stone-900">
+          Social Sentiment (90-day)
+        </h3>
+        <p className="mt-1">
+          Aggregated from official social pages and public mentions tied to the
+          jurisdiction. Mentions are scored with a deterministic lexicon model
+          and normalized to a 0–100 sentiment score.
+        </p>
+      </div>
+
       <Link
         href="/methodology"
         className="inline-block text-blue-600 hover:underline"
